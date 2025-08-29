@@ -1,0 +1,6 @@
+export enum MutationKey {
+  /** Auth */
+  SIGN_UP_WITH_EMAIL = "SIGN_UP_WITH_EMAIL",
+  SIGN_IN_WITH_EMAIL = "SIGN_IN_WITH_EMAIL",
+  FORGOT_PASSWORD = "FORGOT_PASSWORD",
+}
