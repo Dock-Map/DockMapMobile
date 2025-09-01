@@ -1,25 +1,37 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-import { useForgotPassword } from '@/src/modules/auth/api/use-forgot-password';
+import { useResetPasswordRequest } from '@/src/modules/auth/api/use-reset-password-request';
 import { ArrowLeftIcon } from '@/src/shared/components/icons';
 import Button from '@/src/shared/components/ui-kit/button';
-import Input from '@/src/shared/components/ui-kit/input';
+import ControlledInput from '@/src/shared/components/ui-kit/controlled-input';
+import { resetPasswordRequestSchema, ResetPasswordRequestFormData } from '@/src/shared/schemas/auth-schemas';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 
 const ForgotPasswordScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
-  const [email, setEmail] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
   
-  const { mutateAsync: forgotPassword } = useForgotPassword();
+  const { mutateAsync: resetPasswordRequest, isPending } = useResetPasswordRequest();
+  
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid }
+  } = useForm<ResetPasswordRequestFormData>({
+    resolver: yupResolver(resetPasswordRequestSchema),
+    mode: 'onSubmit',
+    reValidateMode: 'onBlur',
+  });
   
   const styles = createStyles({ colors, sizes, fonts, weights });
 
@@ -27,20 +39,13 @@ const ForgotPasswordScreen: React.FC = () => {
     router.back();
   };
 
-  const handleContinue = async () => {
-    if (!email) return;
-    
-    setIsLoading(true);
+  const onSubmit = async (data: ResetPasswordRequestFormData) => {
     try {
-      // Используем заглушку API
-      await forgotPassword({ email });
+      await resetPasswordRequest(data);
       
-      // Переходим на экран подтверждения с переданным email
-      router.push(`/(auth)/(forgot-password)/forgot-password-confirmation?email=${encodeURIComponent(email)}` as any);
+      router.push(`/(auth)/(forgot-password)/forgot-password-confirmation?email=${encodeURIComponent(data.email)}` as any);
     } catch (error) {
       console.error('Ошибка при отправке запроса на восстановление пароля:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -56,37 +61,42 @@ const ForgotPasswordScreen: React.FC = () => {
         </View>
       </View>
 
-      {/* Основной контент с закруглениями */}
-      <View style={styles.content}>
-        <View style={styles.formContainer}>
-          {/* Заголовок и описание */}
-          <View style={styles.headerContainer}>
-            <Text style={styles.title}>Забыли пароль?</Text>
-            <Text style={styles.subtitle}>
-              Введите email, привязанный к вашему{'\n'}аккаунту, чтобы сбросить пароль
-            </Text>
-          </View>
+      {/* Основной контент */}
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Заголовок и описание */}
+        <View style={styles.headerContainer}>
+          <Text style={styles.title}>Забыли пароль?</Text>
+          <Text style={styles.subtitle}>
+            Введите email, привязанный к аккаунту,{'\n'} чтобы восстановить доступ
+          </Text>
+        </View>
 
-          {/* Поле ввода email */}
-          <Input
+        {/* Поле ввода email */}
+        <View style={styles.inputContainer}>
+          <ControlledInput
+            control={control}
+            name="email"
             type="mail"
+            label="Почта"
             placeholder="Введите email"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.emailInput}
+            error={errors.email}
           />
         </View>
 
-        {/* Кнопка продолжить */}
+        {/* Кнопка сбросить пароль */}
         <Button
           type="primary"
-          onPress={handleContinue}
-          disabled={!email || isLoading}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isPending}
           containerStyle={styles.continueButton}
         >
-          {isLoading ? 'Отправка...' : 'Продолжить'}
+          {isPending ? 'Отправка...' : 'Сбросить пароль'}
         </Button>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -143,20 +153,25 @@ const createStyles = ({
   },
   content: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    paddingTop: 24,
-  },
-  formContainer: {
-    gap: 24,
+    paddingTop: 32,
+    paddingBottom: 24,
   },
   headerContainer: {
     alignItems: 'center',
     gap: 8,
+    marginBottom: 24,
+  },
+  inputContainer: {
+    marginBottom: 32,
   },
   title: {
     fontFamily: fonts.h2,
-    fontWeight: weights.h2,
+    fontWeight: weights.medium,
     fontSize: 20,
     lineHeight: 28,
     letterSpacing: -0.5,
@@ -165,15 +180,12 @@ const createStyles = ({
   },
   subtitle: {
     fontFamily: fonts.text2,
-    fontWeight: weights.text2,
+    fontWeight: weights.normal,
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: -0.5,
     color: colors.grey900,
     textAlign: 'center',
-  },
-  emailInput: {
-    borderRadius: 16,
   },
   continueButton: {
     borderRadius: 16,

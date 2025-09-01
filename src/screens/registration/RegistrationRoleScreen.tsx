@@ -4,7 +4,8 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
+    ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -19,7 +20,7 @@ const RegistrationRoleScreen: React.FC = () => {
 
   const handleContinue = () => {
     if (selectedRole) {
-      router.push('/registration-profile' as any);
+      router.push('/(auth)/registration-profile' as any);
     }
   };
 
@@ -55,14 +56,18 @@ const RegistrationRoleScreen: React.FC = () => {
           <Text style={styles.headerTitle}>Регистрация</Text>
           <View style={styles.badge}>
             <Text style={styles.badgeText}>
-              <Text style={styles.badgeTextActive}>2</Text>/3
+              <Text style={styles.badgeTextActive}>1</Text>/3
             </Text>
           </View>
         </View>
       </View>
 
       {/* Основной контент */}
-      <View style={styles.content}>
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.formContainer}>
           {/* Заголовок и описание */}
           <View style={styles.headerContainer}>
@@ -125,7 +130,7 @@ const RegistrationRoleScreen: React.FC = () => {
         >
           Продолжить
         </Button>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -200,9 +205,13 @@ const createStyles = ({
   },
   content: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 24,
     paddingTop: 24,
+    paddingBottom: 24,
   },
   formContainer: {
     gap: 24,

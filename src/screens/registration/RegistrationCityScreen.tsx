@@ -6,13 +6,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { cityService } from '@/src/services/city.service';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
-import { City } from '@/src/types';
+import { useGetCities } from '../../modules/user/api/use-get-cities';
+import { CityDto } from '../../shared/api/types/data-contracts';
 import Button from '@components/ui-kit/button';
 import Input from '@components/ui-kit/input';
 import { ArrowLeftIcon } from '../../shared/components/icons';
@@ -21,20 +22,21 @@ const RegistrationCityScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
   const [selectedCity, setSelectedCity] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
-  const [cities, setCities] = useState<City[]>([]);
-  const [filteredCities, setFilteredCities] = useState<City[]>([]);
-  const [pressedItemId, setPressedItemId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedCityId, setSelectedCityId] = useState<string | null>(null); // ID выбранного города из списка
+  const [filteredCities, setFilteredCities] = useState<CityDto[]>([]);
+  const [pressedItemId, setPressedItemId] = useState<number | null>(null);
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  
+  const { data: cities = [], isLoading, error } = useGetCities();
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const styles = createStyles({ colors, sizes, fonts, weights });
 
   useEffect(() => {
-    loadCities();
-  }, []);
+    if (cities.length > 0) {
+      setFilteredCities(cities);
+    }
+  }, [cities]);
 
-  // Cleanup таймера при размонтировании компонента
   useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
@@ -43,29 +45,16 @@ const RegistrationCityScreen: React.FC = () => {
     };
   }, []);
 
-  const loadCities = async () => {
-    try {
-      setIsLoading(true);
-      const citiesData = await cityService.getCities();
-      setCities(citiesData);
-      setFilteredCities(citiesData);
-    } catch (error) {
-      console.error('Ошибка загрузки городов:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCitySelect = useCallback((city: City) => {
+  const handleCitySelect = useCallback((city: CityDto) => {
     setSelectedCity(city.name);
-    setSelectedCityId(city.id); // Сохраняем ID выбранного города
+    setSelectedCityId(city.id);
     setShowDropdown(false);
     setPressedItemId(null);
   }, []);
 
   const handleClearCity = useCallback(() => {
     setSelectedCity('');
-    setSelectedCityId(null); // Сбрасываем выбранный город
+    setSelectedCityId(null);
     setFilteredCities(cities);
     setShowDropdown(false);
   }, [cities]);
@@ -84,27 +73,28 @@ const RegistrationCityScreen: React.FC = () => {
   const handleCitySearch = useCallback((query: string) => {
     setSelectedCity(query);
     
-    // Сбрасываем выбранный город при ручном вводе
     setSelectedCityId(null);
     
-    // Показываем dropdown при вводе текста
     if (query.trim() && !showDropdown) {
       setShowDropdown(true);
     }
     
-    // Немедленно фильтруем для лучшего UX
     filterCities(query);
     
-    // Очищаем предыдущий таймер (для дополнительной оптимизации, если понадобится)
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
   }, [filterCities, showDropdown]);
 
   const handleContinue = () => {
-    // Проверяем, что город выбран именно из списка (не просто введен текст)
     if (selectedCityId && selectedCity) {
-      router.push('/registration-role' as any);
+      (global as any).registrationData = {
+        ...(global as any).registrationData,
+        cityId: selectedCityId,
+        cityName: selectedCity,
+      };
+      
+      router.replace('/(protected-tabs)' as any);
     }
   };
 
@@ -112,7 +102,7 @@ const RegistrationCityScreen: React.FC = () => {
     router.back();
   };
 
-  const renderCityItem = useCallback(({ item: city }: { item: City }) => (
+  const renderCityItem = useCallback(({ item: city }: { item: CityDto }) => (
     <TouchableOpacity
       style={[
         styles.dropdownItem,
@@ -132,7 +122,7 @@ const RegistrationCityScreen: React.FC = () => {
     </TouchableOpacity>
   ), [selectedCity, pressedItemId, handleCitySelect, styles]);
 
-  const keyExtractor = useCallback((item: City) => item.id, []);
+  const keyExtractor = useCallback((item: CityDto) => item.id.toString(), []);
 
   const ListEmptyComponent = useMemo(() => {
     if (isLoading) {
@@ -144,6 +134,16 @@ const RegistrationCityScreen: React.FC = () => {
       );
     }
 
+    if (error) {
+      return (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResultsText}>
+            Ошибка загрузки городов
+          </Text>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.noResultsContainer}>
         <Text style={styles.noResultsText}>
@@ -151,7 +151,7 @@ const RegistrationCityScreen: React.FC = () => {
         </Text>
       </View>
     );
-  }, [isLoading, colors, styles]);
+  }, [isLoading, error, colors, styles]);
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -164,14 +164,18 @@ const RegistrationCityScreen: React.FC = () => {
           <Text style={styles.headerTitle}>Регистрация</Text>
           <View style={styles.badge}>
             <Text style={styles.badgeText}>
-              <Text style={styles.badgeTextActive}>1</Text>/3
+              <Text style={styles.badgeTextActive}>3</Text>/3
             </Text>
           </View>
         </View>
       </View>
 
       {/* Основной контент */}
-      <View style={styles.content}>
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.formContainer}>
           {/* Заголовок и описание */}
           <View style={styles.headerContainer}>
@@ -196,13 +200,12 @@ const RegistrationCityScreen: React.FC = () => {
                 onClear={handleClearCity}
                 onFocus={() => setShowDropdown(true)}
                 onBlur={() => {
-                  // Небольшая задержка чтобы позволить выбрать элемент из dropdown
                   setTimeout(() => setShowDropdown(false), 150);
                 }}
               />
             </View>
 
-            {/* Dropdown с городами */}
+
             {showDropdown && (
               <View style={styles.dropdownOverlay}>
                 <View style={styles.dropdownContainer}>
@@ -230,7 +233,7 @@ const RegistrationCityScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Кнопка продолжить */}
+
         <Button
           type="primary"
           onPress={handleContinue}
@@ -239,7 +242,7 @@ const RegistrationCityScreen: React.FC = () => {
         >
           Продолжить
         </Button>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -314,9 +317,13 @@ const createStyles = ({
   },
   content: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 24,
     paddingTop: 24,
+    paddingBottom: 24,
   },
   formContainer: {
     gap: 24,

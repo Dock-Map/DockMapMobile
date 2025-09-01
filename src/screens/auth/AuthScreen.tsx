@@ -9,15 +9,19 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useSignInWithEmail } from "@/src/modules/auth/api/use-sign-in-with-email";
-import { useSignUpWithEmail } from "@/src/modules/auth/api/use-sign-up-with-email";
 import { useAuthStore } from "@/src/modules/auth/stores/auth.store";
 import TelegramLoginWidget from "@/src/modules/auth/widgets/TelegramLogin";
 import VKAuthWithoutSdk from "@/src/modules/auth/widgets/VkLoginWithoutSdk";
 import { RegisterResponseDto } from "@/src/shared/api/types/data-contracts";
+import ControlledInput from "@/src/shared/components/ui-kit/controlled-input";
+import { signInSoftSchema, SignInSoftFormData } from "@/src/shared/schemas/auth-schemas";
 import {
   ThemeColors,
   ThemeFonts,
@@ -26,22 +30,22 @@ import {
 } from "@/src/shared/use-theme";
 import { setRefreshToken, setToken } from "@/src/shared/utils/token";
 import Button from "@components/ui-kit/button";
-import PrivacyPolicy from '@components/ui-kit/privacy-policy';
-import Tabs from "@components/ui-kit/tabs";
-import Input from "../../shared/components/ui-kit/input";
 
 const AuthScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
   const { height: screenHeight } = Dimensions.get("window");
 
-  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { mutateAsync: signInWithEmail, isPending } = useSignInWithEmail();
 
-  const { mutateAsync: signUpWithEmail } = useSignUpWithEmail();
-  const { mutateAsync: signInWithEmail } = useSignInWithEmail();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitted }
+  } = useForm<SignInSoftFormData>({
+    resolver: yupResolver(signInSoftSchema),
+    mode: 'onSubmit', // Валидация только при отправке
+    reValidateMode: 'onBlur', // Перевалидация при потере фокуса
+  });
 
   const { setAuth, user } = useAuthStore();
 
@@ -55,39 +59,18 @@ const AuthScreen: React.FC = () => {
 
   const styles = createStyles({ colors, sizes, fonts, weights });
 
-  const tabs = [
-    { id: "login", title: "Вход" },
-    { id: "register", title: "Регистрация" },
-  ];
-
-  const handleTabPress = (tabId: string) => {
-    setActiveTab(tabId as "login" | "register");
-  };
-
-  const handleLogin = async () => {
-    if (!email || !password) return;
-    setIsLoading(true);
+  const onSubmit = async (data: SignInSoftFormData) => {
     try {
-      signInWithEmail({
-        email,
-        password,
-      }).then((res) => {
-        setAuth(res.user);
-      });
+      const res = await signInWithEmail(data);
+      setAuth(res.user);
     } catch (error) {
       console.error("Ошибка входа:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleRegister = () => {
-    (global as any).registrationData = { email, password, name };
-    router.push("/(auth)/registration-city");
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Вход через ${provider}`);
+    // Первый экран регистрации по маршрутам — registration-role
+    router.push("/(auth)/registration-role");
   };
 
   const handleForgotPassword = () => {
@@ -112,16 +95,8 @@ const AuthScreen: React.FC = () => {
         end={{ x: 0.5, y: 1 }}
       />
 
-      {/* Логотип */}
-      <View
-        style={[
-          styles.logoContainer,
-          {
-            paddingTop: isSmallScreen ? sizes.sm : sizes.m,
-            paddingBottom: isSmallScreen ? sizes.sm : sizes.m,
-          },
-        ]}
-      >
+      {/* Логотип и заголовок */}
+      <View style={styles.headerContainer}>
         <View style={styles.logoCard}>
           <MaskedView
             style={styles.gradientTextContainer}
@@ -130,7 +105,7 @@ const AuthScreen: React.FC = () => {
                 fontFamily: fonts.button,
                 backgroundColor: 'transparent',
               }]}>
-                Dock Map
+                Logo
               </Text>
             }
           >
@@ -144,119 +119,73 @@ const AuthScreen: React.FC = () => {
                 fontFamily: fonts.button,
                 opacity: 0,
               }]}>
-                Dock Map
+                Logo
               </Text>
             </LinearGradient>
           </MaskedView>
         </View>
+        
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>Вход в аккаунт</Text>
+          <Text style={styles.subtitleText}>Войдите, чтобы управлять бронями{'\n'}и профилем</Text>
+        </View>
       </View>
 
       {/* Основной контент */}
-      <View style={styles.mainContent}>
+      <ScrollView 
+        style={styles.mainContent}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Белая карточка для основного контента */}
         <View style={styles.contentCard}>
-          {/* Основной контент с отступом */}
-          <View style={styles.scrollableContent}>
-            {/* Табы */}
-            <View style={styles.tabsContainer}>
-              <Tabs
-                type="type3"
-                items={tabs}
-                activeTabId={activeTab}
-                onTabPress={handleTabPress}
-                containerStyle={styles.tabsWrapper}
+          <View style={styles.formContent}>
+            {/* Поля ввода */}
+            <View style={styles.inputsContainer}>
+              {/* Email */}
+              <ControlledInput
+                control={control}
+                name="email"
+                type="mail"
+                label="Почта"
+                placeholder="name@example.com"
+                error={errors.email}
               />
+
+              {/* Пароль и забыли пароль */}
+              <View style={styles.passwordContainer}>
+                <ControlledInput
+                  control={control}
+                  name="password"
+                  type="password"
+                  label="Пароль"
+                  placeholder="Введите пароль"
+                  error={errors.password}
+                />
+                
+                {/* Забыли пароль */}
+                <TouchableOpacity
+                  style={styles.forgotPasswordContainer}
+                  onPress={handleForgotPassword}
+                >
+                  <Text style={styles.forgotPasswordText}>
+                    Забыли пароль?
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
-            {/* Форма */}
-            <View style={styles.formContainer}>
-              {activeTab === 'login' ? (
-                <>
-                  {/* Поля ввода */}
-                  <View style={styles.inputsContainer}>
-                    {/* Email */}
-                    <Input
-                      type="mail"
-                      placeholder="Введите email"
-                      value={email}
-                      onChangeText={setEmail}
-                    />
+            {/* Кнопка входа и социальные сети */}
+            <View style={styles.actionsContainer}>
+              <Button
+                type="primary"
+                onPress={handleSubmit(onSubmit)}
+                disabled={isPending}
+                containerStyle={styles.loginButton}
+              >
+                {isPending ? 'Вход...' : 'Войти'}
+              </Button>
 
-                    {/* Пароль и забыли пароль */}
-                    <View style={styles.passwordContainer}>
-                      <Input
-                        type="password"
-                        placeholder="Введите пароль"
-                        value={password}
-                        onChangeText={setPassword}
-                      />
-                      
-                      {/* Забыли пароль */}
-                      <TouchableOpacity
-                        style={styles.forgotPasswordContainer}
-                        onPress={handleForgotPassword}
-                      >
-                        <Text style={styles.forgotPasswordText}>
-                          Забыли пароль?
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-
-                  {/* Кнопка входа */}
-                  <Button
-                    type="primary"
-                    onPress={handleLogin}
-                    disabled={!email || !password || isLoading}
-                    containerStyle={styles.loginButton}
-                  >
-                    {isLoading ? 'Вход...' : 'Войти'}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  {/* Поля ввода для регистрации */}
-                  <View style={styles.inputsContainer}>
-                    {/* Имя */}
-                    <Input
-                      type="name"
-                      placeholder="Введите имя"
-                      value={name}
-                      onChangeText={setName}
-                    />
-
-                    {/* Email */}
-                    <Input
-                      type="mail"
-                      placeholder="Введите email"
-                      value={email}
-                      onChangeText={setEmail}
-                    />
-
-                    {/* Пароль */}
-                    <Input
-                      type="password"
-                      placeholder="Введите пароль"
-                      value={password}
-                      onChangeText={setPassword}
-                    />
-                  </View>
-
-                  {/* Кнопка регистрации */}
-                  <Button
-                    type="primary"
-                    onPress={handleRegister}
-                    disabled={!name || !email || !password || isLoading}
-                    containerStyle={styles.registerButton}
-                  >
-                    Создать аккаунт
-                  </Button>
-                </>
-              )}
-            </View>
-
-            {/* Социальные сети */}
-            <View style={styles.socialContainer}>
               <View style={styles.dividerContainer}>
                 <View style={styles.divider} />
                 <Text style={styles.dividerText}>или войти через</Text>
@@ -287,12 +216,17 @@ const AuthScreen: React.FC = () => {
                 />
               </View>
             </View>
-          </View>
 
-          {/* Политика конфиденциальности прижата к низу */}
-          <PrivacyPolicy containerStyle={styles.privacyPolicyContainer} />
+            {/* Ссылка на регистрацию */}
+            <View style={styles.registrationContainer}>
+              <Text style={styles.registrationText}>Нет аккаунта?</Text>
+              <TouchableOpacity onPress={handleRegister}>
+                <Text style={styles.registrationLink}>Регистрация</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -319,8 +253,12 @@ const createStyles = ({
     bottom: 0,
     zIndex: -1,
   },
-  logoContainer: {
+  headerContainer: {
     alignItems: 'center',
+    paddingTop: sizes.m,
+    paddingBottom: sizes.m,
+    paddingHorizontal: sizes.m,
+    gap: sizes.m,
   },
   logoCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.12)',
@@ -345,39 +283,52 @@ const createStyles = ({
   gradientText: {
     alignSelf: 'center',
   },
+  titleContainer: {
+    alignItems: 'center',
+    gap: sizes.s,
+  },
+  titleText: {
+    fontFamily: fonts.h1,
+    fontWeight: weights.semibold,
+    fontSize: sizes.h1,
+    lineHeight: 32,
+    letterSpacing: -0.5,
+    color: colors.white,
+    textAlign: 'center',
+  },
+  subtitleText: {
+    fontFamily: fonts.text2,
+    fontWeight: weights.normal,
+    fontSize: sizes.text2,
+    lineHeight: 24,
+    letterSpacing: -0.5,
+    color: colors.white,
+    textAlign: 'center',
+  },
   mainContent: {
     flex: 1, 
-    paddingHorizontal: 0, 
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 0,
   },
   contentCard: {
-    backgroundColor: colors.background,
-    borderRadius: sizes.md,
+    backgroundColor: '#FAFCFE',
+    borderRadius: 32,
     flex: 1, 
-    borderTopLeftRadius: sizes.md,
-    borderTopRightRadius: sizes.md,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
     borderBottomLeftRadius: 0, 
     borderBottomRightRadius: 0, 
     justifyContent: 'space-between',
   },
-  scrollableContent: {
+  formContent: {
     flex: 1,
     padding: sizes.m,
+    justifyContent: 'space-between',
+    gap: sizes.md,
   },
-  privacyPolicyContainer: {
-    marginTop: 0,
-    paddingHorizontal: 0,
-    paddingBottom: 34,
-  },
-  tabsContainer: {
-    alignItems: 'center',
-    marginBottom: sizes.md,
-  },
-  tabsWrapper: {
-    width: '100%',
-  },
-  formContainer: {
-    gap: sizes.m,
-  },
+
   inputsContainer: {
     gap: sizes.sm,
   },
@@ -400,14 +351,13 @@ const createStyles = ({
     color: colors.primary600,
   },
   loginButton: {
-    marginTop: sizes.s,
+    marginTop: 0,
   },
   registerButton: {
     marginTop: sizes.s,
   },
-  socialContainer: {
-    gap: sizes.md,
-    marginTop: sizes.m,
+  actionsContainer: {
+    gap: sizes.m,
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -447,6 +397,27 @@ const createStyles = ({
     fontSize: sizes.text3,
     lineHeight: 20,
     color: colors.black,
+  },
+  registrationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: sizes.s,
+    paddingBottom: 34,
+  },
+  registrationText: {
+    fontFamily: fonts.text3,
+    fontWeight: weights.normal,
+    fontSize: sizes.text3,
+    lineHeight: 20,
+    color: colors.grey700,
+  },
+  registrationLink: {
+    fontFamily: fonts.text3,
+    fontWeight: weights.medium,
+    fontSize: sizes.text3,
+    lineHeight: 20,
+    color: colors.primary600,
   },
 
 });

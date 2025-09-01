@@ -46,11 +46,11 @@ const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* 
       <ScrollView 
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <View style={styles.userInfo}>
@@ -69,7 +69,6 @@ const HomeScreen: React.FC = () => {
             </View>
           </View>
 
-          {/* Поиск */}
           <TouchableOpacity onPress={handleSearch} style={styles.searchContainer}>
             <View style={styles.searchInput}>
               <View style={styles.searchIcon} />
@@ -77,7 +76,6 @@ const HomeScreen: React.FC = () => {
             </View>
           </TouchableOpacity>
 
-          {/* Город */}
           <View style={styles.cityContainer}>
             <TouchableOpacity onPress={handleCityChange} style={styles.cityButton}>
               <View style={styles.cityIcon} />
@@ -87,9 +85,7 @@ const HomeScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Основной контент */}
         <View style={styles.mainContent}>
-          {/* Популярные клубы */}
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Популярные клубы</Text>
@@ -103,7 +99,6 @@ const HomeScreen: React.FC = () => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.clubsContainer}
             >
-              {/* Клуб 1 */}
               <TouchableOpacity 
                 style={styles.clubCard}
                 onPress={() => handleClubPress('club1')}
@@ -121,7 +116,6 @@ const HomeScreen: React.FC = () => {
                 </View>
               </TouchableOpacity>
 
-              {/* Клуб 2 */}
               <TouchableOpacity 
                 style={styles.clubCard}
                 onPress={() => handleClubPress('club2')}
@@ -141,7 +135,6 @@ const HomeScreen: React.FC = () => {
             </ScrollView>
           </View>
 
-          {/* Быстрые действия */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Быстрые действия</Text>
             
@@ -170,6 +163,7 @@ const HomeScreen: React.FC = () => {
           </View>
         </View>
       </ScrollView>
+      */}
     </SafeAreaView>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
+  Text,
   TextInput,
   TextInputProps,
   TextStyle,
@@ -9,12 +10,13 @@ import {
   ViewStyle
 } from 'react-native';
 import { useTheme } from '../../use-theme';
-import { EyeIcon, EyeShowIcon, LockKeyIcon, MailIcon, SearchIcon, UserIcon, XCircle20Icon } from '../icons';
+import { DotIcon, ErrorIcon, EyeOpenIcon, LockKeyIcon, MailIcon, SearchIcon, UserIcon, XCircle20Icon } from '../icons';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
   state?: 'default' | 'error' | 'success' | 'disabled' | 'active' | 'filled';
   type?: 'base' | 'search' | 'mail' | 'password' | 'name';
   icon?: string;
+  label?: string;
   placeholder?: string;
   value?: string;
   onChangeText?: (text: string) => void;
@@ -27,12 +29,14 @@ interface InputProps extends Omit<TextInputProps, 'style'> {
   inputStyle?: TextStyle;
   containerStyle?: ViewStyle;
   secureTextEntry?: boolean;
+  error?: { message?: string };
 }
 
 const Input: React.FC<InputProps> = ({
   state = 'default',
   type = 'base',
   icon,
+  label,
   placeholder,
   value,
   onChangeText,
@@ -45,6 +49,7 @@ const Input: React.FC<InputProps> = ({
   inputStyle,
   containerStyle,
   secureTextEntry,
+  error,
   ...props
 }) => {
   const { colors, fonts, weights, sizes } = useTheme();
@@ -57,18 +62,21 @@ const Input: React.FC<InputProps> = ({
   
   const inputState = disabled 
     ? 'disabled' 
-    : isFocused 
-      ? 'active' 
-      : (state !== 'default' && state !== 'filled') 
-        ? state 
-        : hasValue 
-          ? 'filled' 
-          : 'default';
+    : error 
+      ? 'error'
+      : isFocused 
+        ? 'active' 
+        : (state !== 'default' && state !== 'filled') 
+          ? state 
+          : hasValue 
+            ? 'filled' 
+            : 'default';
   
   // Определяем свойства в зависимости от типа
   const isPasswordType = type === 'password';
   const shouldShowPasswordToggle = isPasswordType;
   const actualSecureTextEntry = isPasswordType ? !showPassword : secureTextEntry;
+  const shouldShowErrorDots = isPasswordType && error && hasValue;
   
   // Автоматически включаем clearable для определенных типов
   const shouldBeClearable = clearable || type === 'search' || type === 'mail' || type === 'name';
@@ -105,7 +113,7 @@ const Input: React.FC<InputProps> = ({
     }
     // Default state
     return {
-      backgroundColor: colors.grey200, // #EAF0F6
+      backgroundColor: colors.grey100, // #EFF3F8
       borderColor: 'transparent',
       color: colors.grey500, // #A1B0CA 
     };
@@ -155,67 +163,75 @@ const Input: React.FC<InputProps> = ({
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.inputContainer, inputStyleFromState, style]}>
-        {/* Иконка слева */}
-        {(getLeftIcon() || icon) && (
-          <View style={styles.iconContainer}>
-            {getLeftIcon()}
-          </View>
+        {/* Лейбл */}
+        {label && (
+          <Text style={[styles.label, {
+            fontFamily: fonts.text3,
+            fontWeight: weights.medium,
+            fontSize: 12,
+            lineHeight: 16,
+            color: colors.grey900,
+          }]}>
+            {label}
+          </Text>
         )}
         
-        {/* Поле ввода */}
-        <TextInput
-          style={[
-            styles.textInput,
-            {
-              fontFamily: fonts.text3,
-              fontWeight: weights.normal,
-              fontSize: 16, 
-              color: inputStyleFromState.color,
-            },
-            inputStyle,
-          ]}
-          placeholder={placeholder}
-          placeholderTextColor={colors.grey500} // #A1B0CA
-          value={value}
-          onChangeText={onChangeText}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          editable={!disabled}
-          secureTextEntry={actualSecureTextEntry}
-          autoCapitalize={type === 'mail' ? 'none' : 'sentences'}
-          keyboardType={type === 'mail' ? 'email-address' : 'default'}
-          {...props}
-        />
-        
-        {/* Правые кнопки */}
-        <View style={styles.rightButtonsContainer}>
-          {/* Кнопка показа/скрытия пароля */}
-          {shouldShowPasswordToggle && (
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={togglePasswordVisibility}
-              activeOpacity={0.7}
-            >
-              {showPassword ? (
-                <EyeIcon width={20} height={20} color={colors.grey500} />
-              ) : (
-                <EyeShowIcon width={20} height={20} color={colors.grey500} />
-              )}
-            </TouchableOpacity>
-          )}
-          
-          {/* Кнопка очистки (16x16 как в Figma) */}
-          {shouldShowClear && (
-            <TouchableOpacity
-              style={styles.clearButton}
-              onPress={handleClear}
-              activeOpacity={0.7}
-            >
-              <XCircle20Icon width={16} height={16} color={colors.grey200} />
-            </TouchableOpacity>
-          )}
-        </View>
+                        {/* Поле ввода с кнопкой переключения видимости */}
+                <View style={styles.inputRow}>
+                  {shouldShowErrorDots ? (
+                    <View style={styles.passwordDotsContainer}>
+                      {Array.from({ length: value?.length || 0 }).map((_, index) => (
+                        <DotIcon key={index} width={4} height={4} color="#F53F3F" />
+                      ))}
+                    </View>
+                  ) : (
+                    <TextInput
+                      style={[
+                        styles.textInput,
+                        {
+                          fontFamily: fonts.text2,
+                          fontWeight: weights.normal,
+                          fontSize: 16, 
+                          lineHeight: 24,
+                          letterSpacing: -0.5,
+                          color: inputStyleFromState.color,
+                        },
+                        inputStyle,
+                      ]}
+                      placeholder={placeholder}
+                      placeholderTextColor={colors.grey500} // #A1B0CA
+                      value={value}
+                      onChangeText={onChangeText}
+                      onFocus={handleFocus}
+                      onBlur={handleBlur}
+                      editable={!disabled}
+                      secureTextEntry={actualSecureTextEntry}
+                      autoCapitalize={type === 'mail' ? 'none' : 'sentences'}
+                      keyboardType={type === 'mail' ? 'email-address' : 'default'}
+                      {...props}
+                    />
+                  )}
+                  
+                  {/* Кнопка переключения видимости пароля */}
+                  {shouldShowPasswordToggle && (
+                    <TouchableOpacity 
+                      style={styles.eyeButton} 
+                      onPress={togglePasswordVisibility}
+                      disabled={disabled}
+                    >
+                      <EyeOpenIcon width={20} height={20} color="#A1B0CA" />
+                    </TouchableOpacity>
+                  )}
+                </View>
       </View>
+      
+      {/* Сообщение об ошибке */}
+      {error && error.message && (
+        <View style={styles.errorContainer}>
+          <ErrorIcon width={16} height={16} color="#F53F3F" />
+          <Text style={styles.errorText}>{error.message}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -225,18 +241,18 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   inputContainer: {
+    flexDirection: 'column',
+    gap: 4,
+    padding: 12, 
+    borderRadius: 12, 
+  },
+  inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 56, 
-    paddingHorizontal: 16, 
-    borderRadius: 16, 
-    gap: 12, 
+    justifyContent: 'space-between',
   },
-  iconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 20, 
-    height: 20,
+  label: {
+    marginBottom: 0,
   },
   textInput: {
     flex: 1,
@@ -244,23 +260,29 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     margin: 0,
   },
-  rightButtonsContainer: {
+  eyeButton: {
+    padding: 8,
+    marginLeft: 8,
+  },
+  passwordDotsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 3,
+    flex: 1,
+    paddingVertical: 0,
   },
-  actionButton: {
+  errorContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: 20,
-    height: 20,
+    gap: 4,
+    marginTop: 4,
   },
-  clearButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 16, 
-    height: 16,
-    padding: 10, 
+  errorText: {
+    fontFamily: 'Onest',
+    fontWeight: '400',
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#F53F3F',
   },
 });
 
