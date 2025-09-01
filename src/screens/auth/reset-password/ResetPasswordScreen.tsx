@@ -200,7 +200,6 @@ const ResetPasswordScreen: React.FC = () => {
               <Text style={styles.signInButtonText}>Войти</Text>
             </TouchableOpacity>
           </View>
-                  </View>
         </View>
         
         {/* Модалка успешного обновления пароля */}
