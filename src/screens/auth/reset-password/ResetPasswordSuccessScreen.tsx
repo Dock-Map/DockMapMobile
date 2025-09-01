@@ -14,7 +14,7 @@ import Button from '@/src/shared/components/ui-kit/button';
 import Input from '@/src/shared/components/ui-kit/input';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 
-const ForgotPasswordScreen: React.FC = () => {
+const ResetPasswordSuccessScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
   const [email, setEmail] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +52,7 @@ const ForgotPasswordScreen: React.FC = () => {
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
             <ArrowLeftIcon width={24} height={24} color={colors.black} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Восстановление доступа</Text>
+          <Text style={styles.headerTitle}>Сброс пароля</Text>
         </View>
       </View>
 
@@ -181,4 +181,4 @@ const createStyles = ({
   },
 });
 
-export default ForgotPasswordScreen;
+export default ResetPasswordSuccessScreen;

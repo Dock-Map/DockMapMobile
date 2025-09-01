@@ -82,9 +82,8 @@ const AuthScreen: React.FC = () => {
   };
 
   const handleRegister = () => {
-   
     (global as any).registrationData = { email, password, name };
-    router.push("/registration-city" as any);
+    router.push("/(auth)/registration-city");
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -92,7 +91,7 @@ const AuthScreen: React.FC = () => {
   };
 
   const handleForgotPassword = () => {
-    router.push('/forgot-password' as any);
+    router.push('/(auth)/(forgot-password)/forgot-password');
   };
 
   return (

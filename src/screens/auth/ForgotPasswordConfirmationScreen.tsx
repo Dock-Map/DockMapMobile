@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ArrowLeftIcon, PenIcon } from '@/src/shared/components/icons';
+import { ArrowLeftIcon, PenIcon, ResetIcon } from '@/src/shared/components/icons';
 import Button from '@/src/shared/components/ui-kit/button';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 
@@ -27,7 +27,7 @@ const ForgotPasswordConfirmationScreen: React.FC = () => {
   };
 
   const handleContinue = () => {
-    router.push('/(auth)' as any);
+    router.push('/(auth)/(reset-password)/reset-password' as any);
   };
 
   return (
@@ -44,6 +44,9 @@ const ForgotPasswordConfirmationScreen: React.FC = () => {
 
       {/* Основной контент */}
       <View style={styles.content}>
+        <View style={styles.resetIconContainer}>
+          <ResetIcon width={24} height={24} color={colors.black} />
+        </View>
         <View style={styles.formContainer}>
           {/* Заголовок и описание */}
           <View style={styles.headerContainer}>
@@ -190,6 +193,15 @@ const createStyles = ({
     backgroundColor: colors.primary500,
     borderRadius: 16,
     // paddingVertical: 16,
+  },
+  resetIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.grey100,
+    borderRadius: 32,
+    width: 240,
+    alignSelf: 'center',
+    height: 240,
   },
 });
 
