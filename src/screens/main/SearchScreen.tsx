@@ -24,11 +24,10 @@ const SearchScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      {/* <ScrollView 
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <ArrowBackIcon style={styles.backIcon} />
@@ -37,7 +36,6 @@ const SearchScreen: React.FC = () => {
           <Text style={styles.title}>Поиск</Text>
         </View>
 
-        {/* Поиск */}
         <View style={styles.searchContainer}>
           <View style={styles.searchInputContainer}>
             <Input
@@ -54,14 +52,13 @@ const SearchScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Результаты поиска */}
         <View style={styles.resultsContainer}>
           <Text style={styles.sectionTitle}>Результаты поиска</Text>
           <Text style={styles.noResultsText}>
             Введите запрос для поиска клубов и причалов
           </Text>
         </View>
-      </ScrollView>
+      </ScrollView> */}
     </SafeAreaView>
   );
 };

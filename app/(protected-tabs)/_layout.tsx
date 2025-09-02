@@ -7,10 +7,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
 import { Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProtectedLayout() {
   const { width: screenWidth } = useWindowDimensions();
-  
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -40,7 +42,7 @@ export default function ProtectedLayout() {
                 boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.1)",
                 position: "absolute",
                 width: "90%",
-                top: -10,
+                top: -insets.bottom + 10,
                 left: screenWidth * 0.5,
                 transform: [{ translateX: -(screenWidth * 0.45) }],
                 borderRadius: 24,

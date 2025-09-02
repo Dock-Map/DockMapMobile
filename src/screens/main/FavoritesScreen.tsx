@@ -17,11 +17,10 @@ const FavoritesScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      {/* <ScrollView 
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <View style={styles.backIcon} />
@@ -30,7 +29,6 @@ const FavoritesScreen: React.FC = () => {
           <Text style={styles.title}>Избранное</Text>
         </View>
 
-        {/* Содержимое */}
         <View style={styles.content}>
           <View style={styles.emptyState}>
             <View style={styles.heartIcon} />
@@ -40,7 +38,7 @@ const FavoritesScreen: React.FC = () => {
             </Text>
           </View>
         </View>
-      </ScrollView>
+      </ScrollView> */}
     </SafeAreaView>
   );
 };

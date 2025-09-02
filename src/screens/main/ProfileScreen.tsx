@@ -84,7 +84,7 @@ const ProfileScreen: React.FC = () => {
         </View>
 
         {/* Меню */}
-        <View style={styles.menuContainer}>
+        {/* <View style={styles.menuContainer}>
           {menuItems.map((item, index) => (
             <TouchableOpacity
               key={index}
@@ -98,7 +98,7 @@ const ProfileScreen: React.FC = () => {
               <ArrowBackIcon style={styles.arrowIcon} />
             </TouchableOpacity>
           ))}
-        </View>
+        </View> */}
 
         {/* Кнопка выхода */}
         <View style={styles.logoutContainer}>
