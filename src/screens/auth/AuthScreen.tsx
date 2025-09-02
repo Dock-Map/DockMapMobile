@@ -101,7 +101,7 @@ const AuthScreen: React.FC = () => {
           <MaskedView
             style={styles.gradientTextContainer}
             maskElement={
-              <Text style={[styles.logoText, { 
+              <Text style={[styles.logoText, {
                 fontFamily: fonts.button,
                 backgroundColor: 'transparent',
               }]}>
@@ -115,7 +115,7 @@ const AuthScreen: React.FC = () => {
               end={{ x: 0, y: 1 }}
               style={styles.gradientText}
             >
-              <Text style={[styles.logoText, { 
+              <Text style={[styles.logoText, {
                 fontFamily: fonts.button,
                 opacity: 0,
               }]}>
@@ -124,7 +124,7 @@ const AuthScreen: React.FC = () => {
             </LinearGradient>
           </MaskedView>
         </View>
-        
+
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>Вход в аккаунт</Text>
           <Text style={styles.subtitleText}>Войдите, чтобы управлять бронями{'\n'}и профилем</Text>
@@ -132,7 +132,7 @@ const AuthScreen: React.FC = () => {
       </View>
 
       {/* Основной контент */}
-      <ScrollView 
+      <ScrollView
         style={styles.mainContent}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -148,7 +148,7 @@ const AuthScreen: React.FC = () => {
                 name="email"
                 type="mail"
                 label="Почта"
-                placeholder="name@example.com"
+                placeholder="Введите email"
                 error={errors.email}
               />
 
@@ -162,7 +162,7 @@ const AuthScreen: React.FC = () => {
                   placeholder="Введите пароль"
                   error={errors.password}
                 />
-                
+
                 {/* Забыли пароль */}
                 <TouchableOpacity
                   style={styles.forgotPasswordContainer}
@@ -307,7 +307,7 @@ const createStyles = ({
     textAlign: 'center',
   },
   mainContent: {
-    flex: 1, 
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
@@ -316,11 +316,11 @@ const createStyles = ({
   contentCard: {
     backgroundColor: '#FAFCFE',
     borderRadius: 32,
-    flex: 1, 
+    flex: 1,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
-    borderBottomLeftRadius: 0, 
-    borderBottomRightRadius: 0, 
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     justifyContent: 'space-between',
   },
   formContent: {

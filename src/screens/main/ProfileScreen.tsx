@@ -20,6 +20,7 @@ import {
 } from '../../shared/components/icons';
 import { queryClient } from '@/src/shared/api/configs/query-client-config';
 import { QueryKey } from '@/src/shared/api/constants/api-keys/query-key';
+import { router } from 'expo-router';
 
 const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -33,6 +34,7 @@ const ProfileScreen: React.FC = () => {
       await logout();
       queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ME] });
       console.log('Выход выполнен');
+      router.replace('/(auth)');
     } catch (error) {
       console.error('Ошибка выхода:', error);
     }
@@ -48,7 +50,7 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
@@ -57,7 +59,7 @@ const ProfileScreen: React.FC = () => {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <ArrowBackIcon style={styles.backIcon} />
           </TouchableOpacity>
-          
+
           <Text style={styles.title}>Профиль</Text>
         </View>
 
@@ -70,15 +72,15 @@ const ProfileScreen: React.FC = () => {
               </Text>
             </View>
           </View>
-          
+
           <View style={styles.userDetails}>
             <Text style={styles.userName}>
               {user?.name}
             </Text>
             <Text style={styles.userEmail}>{user?.email}</Text>
             <Text style={styles.userRole}>
-              {user?.role === UserRole.OWNER ? 'Администратор' : 
-               user?.role === UserRole.MANAGER ? 'Судовладелец' : 'Пользователь'}
+              {user?.role === UserRole.OWNER ? 'Администратор' :
+                user?.role === UserRole.MANAGER ? 'Судовладелец' : 'Пользователь'}
             </Text>
           </View>
         </View>

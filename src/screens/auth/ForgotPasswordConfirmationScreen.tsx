@@ -248,6 +248,7 @@ const createStyles = ({
       justifyContent: "center",
     },
     continueButton: {
+      marginTop: 24,
       borderRadius: 16,
     },
     resendContainer: {
