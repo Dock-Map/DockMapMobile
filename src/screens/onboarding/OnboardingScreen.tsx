@@ -18,8 +18,11 @@ import OnboardingSlide from '@components/ui-kit/onboarding-slide';
 import { router } from 'expo-router';
 import { BlurView } from 'expo-blur';
 
+import imgCard2 from '@/assets/images/cardOnboarding2.png';
+
 const { width } = Dimensions.get('window');
-const slideInnerWidth = width;
+
+
 
 const OnboardingScreen: React.FC = () => {
   const { colors, fonts, weights, sizes } = useTheme();
@@ -35,19 +38,19 @@ const OnboardingScreen: React.FC = () => {
       id: 1,
       title: 'Добро пожаловать\nв Dock Map',
       description: 'Быстрое бронирование причалов\nи управление сервисами',
-      image: 'welcome',
+      image: '',
     },
     {
       id: 2,
       title: 'Мгновенный поиск швартовок',
       description: 'Выбирайте клуб по карте, проверяйте\n доступные места и бронируйте причал\n в пару кликов',
-      image: 'search',
+      image: imgCard2,
     },
     {
       id: 3,
       title: 'Управление услугами',
       description: 'От построения интерактивной карты\n причала до управления бронированиями\n и расписанием',
-      image: 'services',
+      image: '',
     },
   ];
 
@@ -79,23 +82,7 @@ const OnboardingScreen: React.FC = () => {
     }
   };
 
-  const renderSlideContent = (slide: OnboardingSlideType) => {
-    switch (slide.image) {
-      case 'welcome':
-        return null;
-      case 'search':
-        return (
-          <Image
-            source={require('@/assets/images/onboarding-slide-2.png')}
-            style={styles.searchImage}
-          />
-        );
-      case 'services':
-        return null;
-      default:
-        return null;
-    }
-  };
+
 
   const renderBackgroundCircles = (slide: OnboardingSlideType) => {
     return <BackgroundCircles variant={slide.image as any} />;
@@ -103,16 +90,14 @@ const OnboardingScreen: React.FC = () => {
 
   return (
     <View style={styles.fullScreenContainer}>
-      {/* Фоновые круги для текущего слайда */}
 
+      <View style={styles.backgroundContainer}>
+
+        {renderBackgroundCircles(slides[currentSlide])}
+      </View>
 
       <SafeAreaView style={styles.container}>
         <View style={styles.mainContent}>
-          <View style={styles.backgroundContainer}>
-
-            {renderBackgroundCircles(slides[currentSlide])}
-          </View>
-
           <ScrollView
             ref={scrollViewRef}
             horizontal
@@ -128,6 +113,7 @@ const OnboardingScreen: React.FC = () => {
                 <OnboardingSlide
                   title={slide.title}
                   description={slide.description}
+                  image={slide.image}
                   pagination={
                     <OnboardingPagination
                       totalSlides={slides.length}
@@ -135,15 +121,12 @@ const OnboardingScreen: React.FC = () => {
                     />
                   }
                 >
-                  {renderSlideContent(slide)}
-                  <BlurView
 
-
-
+                  {/* <BlurView
                     intensity={20}
                     experimentalBlurMethod="dimezisBlurView"
                     style={styles.blurOverlay}
-                  />
+                  /> */}
                 </OnboardingSlide>
 
               </View>
@@ -184,6 +167,7 @@ const getStyles = (colors: any) => StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
     backgroundColor: colors.background,
+    position: 'relative',
   },
   blurOverlay: {
     zIndex: 99,
@@ -212,7 +196,8 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
   backgroundContainer: {
     position: 'absolute',
-
+    width: "100%",
+    height: "100%",
     top: 0,
     left: 0,
     right: 0,

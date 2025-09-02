@@ -5,9 +5,14 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  Image,
+  Dimensions,
 } from 'react-native';
 
 import { useTheme } from '@/src/shared/use-theme';
+import imgCard from '@/assets/images/cardOnboarding.png';
+
+const { width } = Dimensions.get('window');
 
 interface OnboardingSlideProps {
   title: string;
@@ -17,6 +22,7 @@ interface OnboardingSlideProps {
   style?: ViewStyle;
   titleStyle?: TextStyle;
   descriptionStyle?: TextStyle;
+  image?: string;
 }
 
 const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
@@ -27,15 +33,18 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
   style,
   titleStyle,
   descriptionStyle,
+  image,
 }) => {
   const { colors, fonts, weights } = useTheme();
   const styles = getStyles(colors, fonts, weights);
+
 
   return (
     <View style={[styles.container, style]}>
       {/* Верхняя секция: карточка */}
       <View style={styles.topSection}>
         <View style={styles.content}>
+          <Image source={image ? image : imgCard} resizeMode="contain" style={styles.imgCard} />
           {children}
         </View>
 
@@ -61,6 +70,11 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
 };
 
 const getStyles = (colors: any, fonts: any, weights: any) => StyleSheet.create({
+  imgCard: {
+    width: 500,
+    height: 480,
+
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -74,18 +88,18 @@ const getStyles = (colors: any, fonts: any, weights: any) => StyleSheet.create({
     paddingTop: 40,
   },
   content: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 327,
-    height: 400,
-    backgroundColor: colors.white,
-    borderRadius: 40,
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-    padding: 24,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // width: 327,
+    // height: 400,
+    // backgroundColor: colors.white,
+    // borderRadius: 40,
+    // shadowColor: colors.black,
+    // shadowOffset: { width: 6, height: 6 },
+    // shadowOpacity: 0.05,
+    // shadowRadius: 50,
+    // elevation: 6,
+    // padding: 24,
   },
   paginationWrapper: {
     alignItems: 'center',
