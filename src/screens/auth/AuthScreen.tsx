@@ -181,6 +181,7 @@ const AuthScreen: React.FC = () => {
                 type="primary"
                 onPress={handleSubmit(onSubmit)}
                 disabled={isPending}
+                isLoading={isPending}
                 containerStyle={styles.loginButton}
               >
                 {isPending ? 'Вход...' : 'Войти'}

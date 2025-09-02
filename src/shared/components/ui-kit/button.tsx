@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
-import { useTheme } from '../../use-theme';
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
+import { useTheme } from "../../use-theme";
 
 interface ButtonProps {
   children: React.ReactNode;
   onPress?: () => void;
-  type?: 'primary' | 'secondary' | 'text';
-  state?: 'default' | 'press' | 'disabled';
-  size?: 'small' | 'base';
+  type?: "primary" | "secondary" | "text";
+  state?: "default" | "press" | "disabled";
+  size?: "small" | "base";
   icon?: string;
-  iconPosition?: 'left' | 'right';
+  iconPosition?: "left" | "right";
+  isLoading?: boolean;
   disabled?: boolean;
   style?: ViewStyle;
   containerStyle?: ViewStyle;
@@ -17,35 +25,36 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({
-    children,
+  children,
   onPress,
-  type = 'primary',
-  state = 'default',
-  size = 'base',
+  type = "primary",
+  state = "default",
+  size = "base",
   icon,
-  iconPosition = 'left',
+  iconPosition = "left",
+  isLoading = false,
   disabled = false,
-    style,
+  style,
   containerStyle,
   textStyle,
 }) => {
   const { colors, fonts, weights, sizes } = useTheme();
   const [isPressed, setIsPressed] = useState(false);
-  
+
   // Определяем стили кнопки на основе типа и состояния
   const getButtonStyle = () => {
-    const buttonState = disabled ? 'disabled' : (isPressed ? 'press' : state);
-    
-    if (type === 'primary') {
-      if (buttonState === 'disabled') {
+    const buttonState = disabled ? "disabled" : isPressed ? "press" : state;
+
+    if (type === "primary") {
+      if (buttonState === "disabled") {
         return {
           backgroundColor: colors.grey100, // #EFF3F8
           color: colors.grey500, // #A1B0CA
         };
       }
-      if (buttonState === 'press') {
+      if (buttonState === "press") {
         return {
-          backgroundColor: '#008FD2', 
+          backgroundColor: "#008FD2",
           color: colors.white,
         };
       }
@@ -54,9 +63,9 @@ const Button: React.FC<ButtonProps> = ({
         color: colors.white,
       };
     }
-    
-    if (type === 'secondary') {
-      if (buttonState === 'disabled') {
+
+    if (type === "secondary") {
+      if (buttonState === "disabled") {
         return {
           backgroundColor: colors.grey100,
           color: colors.grey500,
@@ -67,34 +76,34 @@ const Button: React.FC<ButtonProps> = ({
         color: colors.primary500,
       };
     }
-    
+
     return {
-      backgroundColor: 'transparent',
+      backgroundColor: "transparent",
       color: colors.primary500,
     };
   };
-  
+
   const buttonStyle = getButtonStyle();
-  
+
   // Создаем стили для кнопки
   const buttonStyles = [
     styles.base,
     {
       backgroundColor: buttonStyle.backgroundColor,
-      paddingVertical: size === 'small' ? 8 : 16,
+      paddingVertical: size === "small" ? 8 : 16,
       paddingHorizontal: 16,
-      borderRadius: size === 'small' ? 100 : 16,
+      borderRadius: size === "small" ? 100 : 16,
     },
     containerStyle || style,
   ];
-  
+
   // Создаем стили для текста
   const textStyles = [
     styles.text,
     {
       color: buttonStyle.color,
-      fontSize: size === 'small' ? 14 : 16,
-      lineHeight: size === 'small' ? 20 : 24,
+      fontSize: size === "small" ? 14 : 16,
+      lineHeight: size === "small" ? 20 : 24,
       fontWeight: weights.button,
       fontFamily: fonts.button,
       letterSpacing: 0, // Согласно Figma Button: 0px
@@ -103,44 +112,45 @@ const Button: React.FC<ButtonProps> = ({
   ];
 
   // Функция для рендера иконки
-  const renderIcon = (position: 'left' | 'right') => {
+  const renderIcon = (position: "left" | "right") => {
     if (!icon || iconPosition !== position) return null;
-    
+
     // Простой рендер иконки (пока без компонентов)
     return null;
   };
 
-        return (
-            <TouchableOpacity
+  return (
+    <TouchableOpacity
       style={buttonStyles}
       onPress={onPress}
-                disabled={disabled}
+      disabled={isLoading || disabled}
       activeOpacity={0.8}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
     >
-      {renderIcon('left')}
-      
-      {typeof children === 'string' ? (
+      {renderIcon("left")}
+
+
+      {isLoading ? <ActivityIndicator size="small" color={buttonStyle.color} /> : typeof children === "string" ? (
         <Text style={textStyles}>{children}</Text>
       ) : (
         children
       )}
-      
-      {renderIcon('right')}
-        </TouchableOpacity>
-    );
+
+      {renderIcon("right")}
+    </TouchableOpacity>
+  );
 };
 
 const styles = StyleSheet.create({
   base: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
   },
   text: {
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 

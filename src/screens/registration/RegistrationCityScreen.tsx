@@ -32,7 +32,7 @@ const RegistrationCityScreen: React.FC = () => {
   
   const { data: cities = [], isLoading, error } = useGetCities();
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { mutateAsync: completeRegistration } = useCompleteRegistration();
+  const { mutateAsync: completeRegistration, isPending } = useCompleteRegistration();
   const styles = createStyles({ colors, sizes, fonts, weights });
 
   useEffect(() => {
@@ -221,6 +221,7 @@ const RegistrationCityScreen: React.FC = () => {
             type="primary"
             onPress={handleContinue}
             disabled={!selectedCityId || !selectedCity}
+            isLoading={isPending}
             containerStyle={styles.continueButton}
           >
             Продолжить

@@ -145,6 +145,7 @@ const ForgotPasswordConfirmationScreen: React.FC = () => {
           type="primary"
           onPress={handleSubmit(onSubmit)}
           disabled={isPending}
+          isLoading={isPending}
           containerStyle={styles.continueButton}
         >
           {isPending ? "Проверка..." : "Подтвердить"}

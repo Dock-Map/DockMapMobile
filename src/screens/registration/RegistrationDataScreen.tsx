@@ -34,7 +34,7 @@ export const RegistrationDataScreen: React.FC = () => {
   const { colors, fonts, weights, sizes } = useTheme();
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
-  const { mutateAsync: signUpWithEmail } = useSignUpWithEmail();
+  const { mutateAsync: signUpWithEmail, isPending } = useSignUpWithEmail();
   const { setRegistrationData, registrationData } = useAuthStore();
   const styles = createStyles({ colors, fonts, weights, sizes });
 
@@ -214,6 +214,7 @@ export const RegistrationDataScreen: React.FC = () => {
               console.log("Form errors:", errors);
               handleSubmit(onSubmit)();
             }}
+            isLoading={isPending}
             style={styles.continueButton}
           >
             Продолжить

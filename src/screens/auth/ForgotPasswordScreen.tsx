@@ -74,6 +74,7 @@ const ForgotPasswordScreen: React.FC = () => {
           type="primary"
           onPress={handleSubmit(onSubmit)}
           disabled={isPending}
+          isLoading={isPending}
           containerStyle={styles.continueButton}
         >
           {isPending ? 'Отправка...' : 'Сбросить пароль'}
