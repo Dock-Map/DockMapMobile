@@ -114,6 +114,9 @@ export interface ThemeSizes {
     shadowOpacity: number;
     shadowRadius: number;
     elevation: number;
+    topBarPaddingTop: number;
+    topBarContentPaddingVertical: number;
+    topBarContentPaddingVerticalWithBadge: number;
 }
 
 export interface ThemeSpacing {

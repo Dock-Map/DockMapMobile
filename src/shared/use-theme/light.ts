@@ -1,3 +1,4 @@
+import { Platform, StatusBar } from "react-native";
 import { THEME as commonTheme } from "./theme";
 import { ITheme, ThemeColors, ThemeGradients, ThemeSizes, ThemeSpacing, } from "./types/theme";
 
@@ -80,6 +81,11 @@ export const SIZES: ThemeSizes = {
     inputBorder: 1,
     inputRadius: 8,
     inputPadding: 12,
+    
+    // TopBar sizes 
+    topBarPaddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) + 10 : 50,
+    topBarContentPaddingVertical: Platform.OS === 'android' ? 8 : 26,
+    topBarContentPaddingVerticalWithBadge: Platform.OS === 'android' ? 6 : 16,
 };
 
 export const SPACING: ThemeSpacing = {

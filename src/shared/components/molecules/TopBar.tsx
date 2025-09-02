@@ -1,8 +1,9 @@
 import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, Platform } from "react-native";
 import { ArrowLeftIcon } from "@/src/shared/components/icons";
 import { ThemeColors, ThemeFonts, ThemeSizes, ThemeWeights, useTheme } from "@/src/shared/use-theme";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const TopBar = ({
   title,
@@ -14,8 +15,9 @@ export const TopBar = ({
   maxBadge?: string;
 }) => {
   const { colors, sizes, fonts, weights } = useTheme();
+  const insets = useSafeAreaInsets();
 
-  const styles = createStyles({ colors, sizes, fonts, weights });
+  const styles = createStyles({ colors, sizes, fonts, weights, insets });
 
 
   const handleBack = () => {
@@ -47,16 +49,18 @@ const createStyles = ({
   sizes,
   fonts,
   weights,
+  insets,
 }: {
   colors: ThemeColors;
   sizes: ThemeSizes;
   fonts: ThemeFonts;
   weights: ThemeWeights;
+  insets: { top: number; bottom: number; left: number; right: number };
 }) => {
   return StyleSheet.create({
     topBar: {
       backgroundColor: colors.white,
-      paddingTop: 50,
+      paddingTop: Platform.OS === 'ios' ? insets.top + 2 : insets.top + 1,
       borderBottomLeftRadius: 24,
       borderBottomRightRadius: 24,
       shadowColor: colors.black,
@@ -68,7 +72,7 @@ const createStyles = ({
     topBarContent: {
       flexDirection: "row",
       alignItems: "center",
-      paddingVertical: 26,
+      paddingVertical: Platform.OS === 'android' ? 26 : 26,
       paddingLeft: 26,
       paddingRight: 16,
       position: "relative",
@@ -76,7 +80,7 @@ const createStyles = ({
     topBarContentWithBadge: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 16,
+      paddingVertical: Platform.OS === 'android' ? 16 : 16,
       paddingLeft: 26,
       paddingRight: 16,
       position: 'relative',
