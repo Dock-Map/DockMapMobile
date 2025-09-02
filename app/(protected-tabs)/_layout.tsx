@@ -5,11 +5,12 @@ import { ProfileIcon } from "@/src/shared/components/icons/tabs-icon/profile-ico
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import "react-native-reanimated";
 
 export default function ProtectedLayout() {
-  console.log("PROTECTED LAYOUT RENDERED");
+  const { width: screenWidth } = useWindowDimensions();
+  
   return (
     <Tabs
       screenOptions={{
@@ -40,8 +41,8 @@ export default function ProtectedLayout() {
                 position: "absolute",
                 width: "90%",
                 top: -10,
-                left: "50%",
-                transform: [{ translateX: "-50%" }],
+                left: screenWidth * 0.5,
+                transform: [{ translateX: -(screenWidth * 0.45) }],
                 borderRadius: 24,
                 flexDirection: "row",
                 gap: 40,

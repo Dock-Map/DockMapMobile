@@ -59,18 +59,23 @@ export const RegistrationDataScreen: React.FC = () => {
 
   const password = watch("password");
 
-  const onSubmit = (data: any) => {
-    signUpWithEmail(data).then(() => {
+  const onSubmit = async (data: any) => {
+    try {
+      await signUpWithEmail(data);
+      console.log("Регистрация успешна");
       setRegistrationData({ ...data, role: registrationData?.role });
       router.push("/(auth)/registration-city");
-    });
+    } catch (error) {
+      console.log("Регистрация не успешна");
+      console.error("Ошибка регистрации:", error);
+    }
   };
 
   // Вычисляем валидность правил пароля
   const hasMinLength = password && password.length >= 8;
   const hasDigit = password && /\d/.test(password);
   const hasUpperCase = password && /[A-ZА-Я]/.test(password);
-
+// partial.lemming.jefd@rapidletter.net
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       {/* Top bar */}

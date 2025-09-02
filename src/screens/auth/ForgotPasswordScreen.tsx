@@ -58,7 +58,7 @@ const ForgotPasswordScreen: React.FC = () => {
             Введите email, привязанный к аккаунту,{'\n'} чтобы восстановить доступ
           </Text>
         </View>
-
+        
         <View style={styles.inputContainer}>
           <ControlledInput
             control={control}

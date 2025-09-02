@@ -6,8 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ScrollView
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -159,11 +158,7 @@ const RegistrationCityScreen: React.FC = () => {
       <TopBar title="Регистрация" badge="3" maxBadge="3" />
 
       {/* Основной контент */}
-      <ScrollView 
-        style={styles.content}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.content}>
         <View style={styles.formContainer}>
           {/* Заголовок и описание */}
           <View style={styles.headerContainer}>
@@ -221,16 +216,17 @@ const RegistrationCityScreen: React.FC = () => {
           </View>
         </View>
 
-
-        <Button
-          type="primary"
-          onPress={handleContinue}
-          disabled={!selectedCityId || !selectedCity}
-          containerStyle={styles.continueButton}
-        >
-          Продолжить
-        </Button>
-      </ScrollView>
+        <View style={styles.buttonContainer}>
+          <Button
+            type="primary"
+            onPress={handleContinue}
+            disabled={!selectedCityId || !selectedCity}
+            containerStyle={styles.continueButton}
+          >
+            Продолжить
+          </Button>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -252,10 +248,6 @@ const createStyles = ({
   },
   content: {
     flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
     paddingHorizontal: 24,
     paddingTop: 24,
     paddingBottom: 24,
@@ -357,6 +349,10 @@ const createStyles = ({
     fontSize: 14,
     color: colors.grey500,
     textAlign: 'center',
+  },
+  buttonContainer: {
+    marginTop: 'auto',
+    paddingTop: 16,
   },
   continueButton: {
     borderRadius: 16,
