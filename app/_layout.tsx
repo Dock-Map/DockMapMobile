@@ -20,19 +20,22 @@ const RootStack = () => {
     isInitialized,
     setIsInitialized,
     setAuth,
+    user
   } = useAuthStore();
 
-  const { data: user, isLoading: isLoadingGetMe } = useGetMe();
+  const { data: userMe, isLoading: isLoadingGetMe } = useGetMe();
   
   useEffect(() => {
     if (!isInitialized || isLoading) {
       return;
     }
-    if (user) {
-      setAuth(user);
+    if (userMe) {
+      setAuth(userMe);
     }
     
     if (isAuthenticated) {
+      console.log(user?.cityId, "user?.cityIduser?.cityIduser?.cityIduser?.cityIduser?.cityId");
+      
       if (!user?.cityId) {
         router.replace("/(auth)/registration-city");
       } else {
@@ -43,7 +46,7 @@ const RootStack = () => {
     } else {
       router.replace("/(auth)");
     }
-  }, [isAuthenticated, isLoading, isFirstEnter, user, setAuth, isInitialized]);
+  }, [isAuthenticated, isLoading, isFirstEnter, user, setAuth, isInitialized, userMe]);
 
   useEffect(() => {
     if (!isInitialized) {

@@ -9,11 +9,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnchorGreyIcon, ArrowLeftIcon, ShipGradientIcon } from '@/src/shared/components/icons';
+import { AnchorGreyIcon, ShipGradientIcon } from '@/src/shared/components/icons';
 import Button from '@/src/shared/components/ui-kit/button';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
 import { RegistrationData } from '@/src/shared/types/auth';
+import { TopBar } from '@/src/shared/components/molecules/TopBar';
 
 const RegistrationRoleScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
@@ -26,10 +27,6 @@ const RegistrationRoleScreen: React.FC = () => {
       setRegistrationData({ ...registrationData, role: selectedRole } as RegistrationData);
       router.push('/(auth)/registration-profile' as any);
     }
-  };
-
-  const handleBack = () => {
-    router.back();
   };
 
   const roles = [
@@ -52,19 +49,7 @@ const RegistrationRoleScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {/* Top bar */}
-      <View style={styles.topBar}>
-        <View style={styles.topBarContent}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <ArrowLeftIcon width={24} height={24} color={colors.black} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Регистрация</Text>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>
-              <Text style={styles.badgeTextActive}>1</Text>/3
-            </Text>
-          </View>
-        </View>
-      </View>
+      <TopBar title="Регистрация" badge="1" maxBadge="3" />
 
       {/* Основной контент */}
       <ScrollView 
@@ -153,59 +138,6 @@ const createStyles = ({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  topBar: {
-    backgroundColor: colors.white,
-    paddingTop: 50,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-  },
-  topBarContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingLeft: 26,
-    paddingRight: 16,
-    position: 'relative',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    padding: 0,
-    zIndex: 1,
-  },
-  headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    fontFamily: fonts.text3,
-    fontWeight: weights.medium,
-    fontSize: 16,
-    lineHeight: 24,
-    letterSpacing: -0.5,
-    color: colors.black,
-    textAlign: 'center',
-  },
-  badge: {
-    backgroundColor: colors.grey200,
-    borderRadius: 100,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    zIndex: 1,
-  },
-  badgeText: {
-    fontFamily: fonts.text3,
-    fontWeight: weights.medium,
-    fontSize: 12,
-    lineHeight: 16,
-    color: colors.grey500,
-  },
-  badgeTextActive: {
-    color: colors.primary500,
   },
   content: {
     flex: 1,

@@ -17,6 +17,8 @@ import Button from '@/src/shared/components/ui-kit/button';
 import ControlledInput from '@/src/shared/components/ui-kit/controlled-input';
 import { resetPasswordRequestSchema, ResetPasswordRequestFormData } from '@/src/shared/schemas/auth-schemas';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
+import { KeyboardScrollView } from './ui/KeyboardScrollView';
+import { TopBar } from '../../shared/components/molecules/TopBar';
 
 const ForgotPasswordScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
@@ -35,10 +37,6 @@ const ForgotPasswordScreen: React.FC = () => {
   
   const styles = createStyles({ colors, sizes, fonts, weights });
 
-  const handleBack = () => {
-    router.back();
-  };
-
   const onSubmit = async (data: ResetPasswordRequestFormData) => {
     try {
       await resetPasswordRequest(data);
@@ -51,23 +49,9 @@ const ForgotPasswordScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      {/* Top bar */}
-      <View style={styles.topBar}>
-        <View style={styles.topBarContent}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <ArrowLeftIcon width={24} height={24} color={colors.black} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Восстановление доступа</Text>
-        </View>
-      </View>
+      <TopBar title="Восстановление доступа" />
 
-      {/* Основной контент */}
-      <ScrollView 
-        style={styles.content}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Заголовок и описание */}
+      <KeyboardScrollView>
         <View style={styles.headerContainer}>
           <Text style={styles.title}>Забыли пароль?</Text>
           <Text style={styles.subtitle}>
@@ -75,7 +59,6 @@ const ForgotPasswordScreen: React.FC = () => {
           </Text>
         </View>
 
-        {/* Поле ввода email */}
         <View style={styles.inputContainer}>
           <ControlledInput
             control={control}
@@ -87,7 +70,6 @@ const ForgotPasswordScreen: React.FC = () => {
           />
         </View>
 
-        {/* Кнопка сбросить пароль */}
         <Button
           type="primary"
           onPress={handleSubmit(onSubmit)}
@@ -96,7 +78,7 @@ const ForgotPasswordScreen: React.FC = () => {
         >
           {isPending ? 'Отправка...' : 'Сбросить пароль'}
         </Button>
-      </ScrollView>
+      </KeyboardScrollView>
     </SafeAreaView>
   );
 };
@@ -115,41 +97,6 @@ const createStyles = ({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  topBar: {
-    backgroundColor: colors.white,
-    paddingTop: 50,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-  },
-  topBarContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 26,
-    paddingLeft: 26,
-    paddingRight: 16,
-    position: 'relative',
-  },
-  backButton: {
-    padding: 0,
-    zIndex: 1,
-  },
-  headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    fontFamily: fonts.text3,
-    fontWeight: weights.medium,
-    fontSize: 16,
-    lineHeight: 24,
-    letterSpacing: -0.5,
-    color: colors.black,
-    textAlign: 'center',
   },
   content: {
     flex: 1,

@@ -19,6 +19,7 @@ import ControlledInput from '@/src/shared/components/ui-kit/controlled-input';
 import PasswordResetSuccessModal from '@/src/shared/components/modals/PasswordResetSuccessModal';
 import { resetPasswordSchema, ResetPasswordFormData } from '@/src/shared/schemas/auth-schemas';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
+import { TopBar } from '../../../shared/components/molecules/TopBar';
 
 const ResetPasswordScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
@@ -78,10 +79,6 @@ const ResetPasswordScreen: React.FC = () => {
     return <ErrorIcon width={16} height={16} color="#F53F3F" />;
   };
 
-  const handleBack = () => {
-    router.back();
-  };
-
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
       await resetPassword(data);
@@ -107,15 +104,7 @@ const ResetPasswordScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      {/* Top bar */}
-      <View style={styles.topBar}>
-        <View style={styles.topBarContent}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <ArrowLeftIcon width={24} height={24} color={colors.black} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Сброс пароля</Text>
-        </View>
-      </View>
+      <TopBar title="Сброс пароля" />
 
       {/* Основной контент */}
       <ScrollView 
@@ -227,41 +216,6 @@ const createStyles = ({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  topBar: {
-    backgroundColor: colors.white,
-    paddingTop: 50,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-  },
-  topBarContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingLeft: 26,
-    paddingRight: 16,
-    position: 'relative',
-  },
-  backButton: {
-    padding: 0,
-    zIndex: 1,
-  },
-  headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    fontFamily: fonts.text3,
-    fontWeight: weights.medium,
-    fontSize: 16,
-    lineHeight: 24,
-    letterSpacing: -0.5,
-    color: colors.black,
-    textAlign: 'center',
   },
   content: {
     flex: 1,

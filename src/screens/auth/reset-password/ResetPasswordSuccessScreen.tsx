@@ -13,6 +13,7 @@ import { ArrowLeftIcon } from '@/src/shared/components/icons';
 import Button from '@/src/shared/components/ui-kit/button';
 import Input from '@/src/shared/components/ui-kit/input';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
+import { TopBar } from '../../../shared/components/molecules/TopBar';
 
 const ResetPasswordSuccessScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
@@ -22,10 +23,6 @@ const ResetPasswordSuccessScreen: React.FC = () => {
   const { mutateAsync: forgotPassword } = useForgotPassword();
   
   const styles = createStyles({ colors, sizes, fonts, weights });
-
-  const handleBack = () => {
-    router.back();
-  };
 
   const handleContinue = async () => {
     if (!email) return;
@@ -46,15 +43,7 @@ const ResetPasswordSuccessScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      {/* Top bar */}
-      <View style={styles.topBar}>
-        <View style={styles.topBarContent}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <ArrowLeftIcon width={24} height={24} color={colors.black} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Сброс пароля</Text>
-        </View>
-      </View>
+      <TopBar title="Сброс пароля" />
 
       {/* Основной контент с закруглениями */}
       <View style={styles.content}>
@@ -105,41 +94,6 @@ const createStyles = ({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-  },
-  topBar: {
-    backgroundColor: colors.white,
-    paddingTop: 50,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-  },
-  topBarContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 26,
-    paddingLeft: 26,
-    paddingRight: 16,
-    position: 'relative',
-  },
-  backButton: {
-    padding: 0,
-    zIndex: 1,
-  },
-  headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    fontFamily: fonts.text3,
-    fontWeight: weights.medium,
-    fontSize: 16,
-    lineHeight: 24,
-    letterSpacing: -0.5,
-    color: colors.black,
-    textAlign: 'center',
   },
   content: {
     flex: 1,

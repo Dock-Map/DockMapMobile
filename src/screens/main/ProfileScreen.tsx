@@ -18,6 +18,8 @@ import {
   ShipIcon,
   UserIcon
 } from '../../shared/components/icons';
+import { queryClient } from '@/src/shared/api/configs/query-client-config';
+import { QueryKey } from '@/src/shared/api/constants/api-keys/query-key';
 
 const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -29,6 +31,7 @@ const ProfileScreen: React.FC = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      queryClient.invalidateQueries({ queryKey: [QueryKey.GET_ME] });
       console.log('Выход выполнен');
     } catch (error) {
       console.error('Ошибка выхода:', error);
