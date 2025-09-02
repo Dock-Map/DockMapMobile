@@ -3,12 +3,24 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
+    "start": "npx expo start --dev-client -c --port 8082",
+    "build_apk": "npx eas build -p android --profile preview --local",
+    "eas_update": "npx eas update --branch production --message \"fix bugs\"",
+    "eas_update:android": "npx eas update --branch preview -p android --message \"fix \"",
+    "build_dev": " eas build --profile development-simulator --platform android --local",
+    "build_android_aab": "eas build --profile production --platform android",
+    "expo_cred_android": "eas update:configurexpo credentials:manager -p android",
+    "build_dev_ios": " eas build --profile development-simulator --platform ios ",
+    "uplad_ios": "eas submit -p ios --latest",
+    "build_ios": "npx eas build -p ios",
+    "build_preview_ios": "eas build -p ios --profile preview ",
+    "install_check_deep": "npx expo install --check",
+    "format": "prettier --write .",
     "android": "expo run:android",
+    "prebuild": "expo prebuild --platform android",
     "ios": "expo run:ios",
-    "web": "expo start --web",
-    "lint": "expo lint"
+    "doctor": "npx expo-doctor@latest",
+    "eas_configure": "eas build:configure"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
