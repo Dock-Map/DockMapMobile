@@ -1,9 +1,14 @@
 {
-  "name": "mobile",
+  "name": "dock-map-mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "npx expo start --dev-client -c --port 8082",
+    "start": "expo start",
+    "reset-project": "node ./scripts/reset-project.js",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "lint": "expo lint",
     "build_apk": "npx eas build -p android --profile preview --local",
     "eas_update": "npx eas update --branch production --message \"fix bugs\"",
     "eas_update:android": "npx eas update --branch preview -p android --message \"fix \"",
@@ -16,9 +21,9 @@
     "build_preview_ios": "eas build -p ios --profile preview ",
     "install_check_deep": "npx expo install --check",
     "format": "prettier --write .",
-    "android": "expo run:android",
+
     "prebuild": "expo prebuild --platform android",
-    "ios": "expo run:ios",
+
     "doctor": "npx expo-doctor@latest",
     "eas_configure": "eas build:configure"
   },
@@ -33,7 +38,7 @@
     "@tanstack/react-query": "^5.85.5",
     "axios": "^1.11.0",
     "expo": "~53.0.22",
-    "expo-blur": "~14.1.5",
+    "expo-blur": "13.0.3",
     "expo-constants": "~17.1.7",
     "expo-crypto": "~14.1.5",
     "expo-font": "~13.3.2",
@@ -72,6 +77,5 @@
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"
   },
-  "private": true,
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+  "private": true
 }

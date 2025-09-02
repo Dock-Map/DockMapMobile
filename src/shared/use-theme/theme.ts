@@ -25,7 +25,7 @@ export const WEIGHTS: ThemeWeights = {
   light: Platform.OS === "ios" ? "300" : "300",
   normal: Platform.OS === "ios" ? "400" : "400",
   medium: Platform.OS === "ios" ? "500" : "500",
-  semibold: Platform.OS === "ios" ? "600" : "600",
+  semibold: Platform.OS === "ios" ? "600" : "800",
   bold: Platform.OS === "ios" ? "700" : "700",
   extrabold: Platform.OS === "ios" ? "800" : "800",
   black: Platform.OS === "ios" ? "900" : "900",
@@ -40,10 +40,10 @@ export const ASSETS: any = {
 
 export const FONTS: ThemeFonts = {
   h1: "OnestBold", // Heading 1: SemiBold (24px/32px)
-  h2: "OnestMedium", // Heading 2: Medium (20px/28px)  
+  h2: "OnestMedium", // Heading 2: Medium (20px/28px)
   text1: "OnestMedium", // Heading 3: Medium (18px/24px)
   text2: "OnestRegular", // Body M Regular: Regular (16px/24px)
-  text3: "OnestMedium", // Body M Medium: Medium (16px/24px) 
+  text3: "OnestMedium", // Body M Medium: Medium (16px/24px)
   button: "OnestBold", // Button: SemiBold (16px/24px)
 };
 

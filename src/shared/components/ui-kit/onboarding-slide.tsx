@@ -30,7 +30,7 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
 }) => {
   const { colors, fonts, weights } = useTheme();
   const styles = getStyles(colors, fonts, weights);
-  
+
   return (
     <View style={[styles.container, style]}>
       {/* Верхняя секция: карточка */}
@@ -38,7 +38,7 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
         <View style={styles.content}>
           {children}
         </View>
-        
+
         {/* Пагинация сразу после карточки */}
         {pagination && (
           <View style={styles.paginationWrapper}>
@@ -46,7 +46,7 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
           </View>
         )}
       </View>
-      
+
       {/* Текстовая информация */}
       <View style={styles.textContainer}>
         <Text style={[styles.title, titleStyle]}>

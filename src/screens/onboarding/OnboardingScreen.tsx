@@ -16,6 +16,7 @@ import Button from '@components/ui-kit/button';
 import OnboardingPagination from '@components/ui-kit/onboarding-pagination';
 import OnboardingSlide from '@components/ui-kit/onboarding-slide';
 import { router } from 'expo-router';
+import { BlurView } from 'expo-blur';
 
 const { width } = Dimensions.get('window');
 const slideInnerWidth = width;
@@ -26,7 +27,7 @@ const OnboardingScreen: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
-  
+
   const styles = getStyles(colors);
 
   const slides: OnboardingSlideType[] = [
@@ -103,65 +104,77 @@ const OnboardingScreen: React.FC = () => {
   return (
     <View style={styles.fullScreenContainer}>
       {/* Фоновые круги для текущего слайда */}
-      <View style={styles.backgroundContainer}>
-        {renderBackgroundCircles(slides[currentSlide])}
-      </View>
-      
+
+
       <SafeAreaView style={styles.container}>
         <View style={styles.mainContent}>
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          style={styles.scrollView}
-        >
-          {slides.map((slide, index) => (
-            <View key={slide.id} style={[styles.slide, { width }]}>
-              <OnboardingSlide
-                title={slide.title}
-                description={slide.description}
-                pagination={
-                  <OnboardingPagination
-                    totalSlides={slides.length}
-                    currentSlide={currentSlide}
+          <View style={styles.backgroundContainer}>
+
+            {renderBackgroundCircles(slides[currentSlide])}
+          </View>
+
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            style={styles.scrollView}
+          >
+
+            {slides.map((slide, index) => (
+              <View key={slide.id} style={[styles.slide, { width }]}>
+                <OnboardingSlide
+                  title={slide.title}
+                  description={slide.description}
+                  pagination={
+                    <OnboardingPagination
+                      totalSlides={slides.length}
+                      currentSlide={currentSlide}
+                    />
+                  }
+                >
+                  {renderSlideContent(slide)}
+                  <BlurView
+
+
+
+                    intensity={20}
+                    experimentalBlurMethod="dimezisBlurView"
+                    style={styles.blurOverlay}
                   />
+                </OnboardingSlide>
+
+              </View>
+            ))}
+          </ScrollView>
+          <View style={styles.bottomSection}>
+            <View style={styles.buttonContainer}>
+              {currentSlide < slides.length - 1 && (
+                <Button
+                  type="secondary"
+                  onPress={handleSkip}
+                  containerStyle={styles.skipButton}
+                >
+                  Пропустить
+                </Button>
+              )}
+
+              <Button
+                type="primary"
+                onPress={handleNext}
+                containerStyle={
+                  currentSlide === slides.length - 1
+                    ? styles.startButton
+                    : styles.nextButton
                 }
               >
-                {renderSlideContent(slide)}
-              </OnboardingSlide>
-            </View>
-          ))}
-        </ScrollView>
-
-        <View style={styles.bottomSection}>
-          <View style={styles.buttonContainer}>
-            {currentSlide < slides.length - 1 && (
-              <Button
-                type="secondary"
-                onPress={handleSkip}
-                containerStyle={styles.skipButton}
-              >
-                Пропустить
+                {currentSlide === slides.length - 1 ? 'Начать' : 'Далее'}
               </Button>
-            )}
-            
-            <Button
-              type="primary"
-              onPress={handleNext}
-              containerStyle={
-                currentSlide === slides.length - 1 
-                  ? styles.startButton 
-                  : styles.nextButton
-              }
-            >
-              {currentSlide === slides.length - 1 ? 'Начать' : 'Далее'}
-            </Button>
+            </View>
           </View>
         </View>
-      </View>
       </SafeAreaView>
     </View>
   );
@@ -172,6 +185,17 @@ const getStyles = (colors: any) => StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  blurOverlay: {
+    zIndex: 99,
+
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 200,
+
+    height: "100%",
+  },
   container: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -180,6 +204,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     overflow: 'visible',
+    position: 'relative',
   },
   scrollView: {
     flex: 1,
@@ -187,11 +212,12 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
   backgroundContainer: {
     position: 'absolute',
+
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 0,
+
   },
   slide: {
     alignItems: 'center',

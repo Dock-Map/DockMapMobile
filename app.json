@@ -1,30 +1,23 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "dockmap",
+    "name": "dock-map-mobile",
+    "slug": "dockmapmobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "dockmap",
+    "scheme": "dockmapmobile",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "ios": {
-      "scheme": "dockmap",
-      "supportsTablet": true,
-      "bundleIdentifier": "com.sosmobile.mobile",
-      "infoPlist": {
-        "NSSupportsAutomaticPasswordGeneration": false,
-        "NSSupportsAutomaticStrongPasswords": false
-      }
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.sosmobile.mobile",
-      "scheme": "dockmap"
+      "package": "com.dockmapmobile.mobile",
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
@@ -49,7 +42,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "51d48f25-fcfd-4a6b-aa48-3134ed337ee4"
+        "projectId": "00bb6392-8683-410a-90c0-08a1f3976da8"
       }
     },
     "owner": "dockmap"
