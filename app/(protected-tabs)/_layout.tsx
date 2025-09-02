@@ -62,8 +62,8 @@ export default function ProtectedLayout() {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      width: 42,
-                      height: 42,
+                      minWidth: 42,
+                      minHeight: 42,
                       gap: 5,
                     }}
                     onPress={() => navigation.navigate(route.name)}
