@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
     RESET_PASSWORD_REQUEST: "auth/password/reset-request",
     VERIFY_RESET_CODE: "auth/password/verify-code",
     RESET_PASSWORD: "auth/password/reset",
+    COMPLETE_REGISTRATION: "user/complete-registration",
   },
   USER: {
     COMPLETE_REGISTRATION: "user/complete-registration",

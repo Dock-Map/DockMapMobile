@@ -96,7 +96,7 @@ export type SignInSoftFormData = yup.InferType<typeof signInSoftSchema>;
 
 // Схема для регистрации данных
 export const registrationDataSchema = yup.object({
-  fullName: yup
+  name: yup
     .string()
     .required('ФИО обязательно')
     .min(2, 'ФИО должно содержать минимум 2 символа'),

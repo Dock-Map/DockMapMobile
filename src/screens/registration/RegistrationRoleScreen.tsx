@@ -12,14 +12,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnchorGreyIcon, ArrowLeftIcon, ShipGradientIcon } from '@/src/shared/components/icons';
 import Button from '@/src/shared/components/ui-kit/button';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
+import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
+import { RegistrationData } from '@/src/shared/types/auth';
 
 const RegistrationRoleScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
   const styles = createStyles({ colors, sizes, fonts, weights });
-  const [selectedRole, setSelectedRole] = useState<'shipowner' | 'yachtclub'>('shipowner');
+  const [selectedRole, setSelectedRole] = useState<'owner' | 'club_admin'>('owner');
+  const { setRegistrationData, registrationData } = useAuthStore();
 
   const handleContinue = () => {
     if (selectedRole) {
+      setRegistrationData({ ...registrationData, role: selectedRole } as RegistrationData);
       router.push('/(auth)/registration-profile' as any);
     }
   };
@@ -30,18 +34,18 @@ const RegistrationRoleScreen: React.FC = () => {
 
   const roles = [
     {
-      id: 'shipowner' as const,
+      id: 'owner' as const,
       title: 'Судовладелец',
       description: 'Хочу бронировать места в клубах',
       icon: ShipGradientIcon,
-      active: selectedRole === 'shipowner',
+      active: selectedRole === 'owner',
     },
     {
-      id: 'yachtclub' as const,
+      id: 'club_admin' as const,
       title: 'Свой яхт-клуб',
       description: 'Хочу продавать услуги',
       icon: AnchorGreyIcon,
-      active: selectedRole === 'yachtclub',
+      active: selectedRole === 'club_admin',
     },
   ];
 

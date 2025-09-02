@@ -31,8 +31,13 @@ const RootStack = () => {
     if (user) {
       setAuth(user);
     }
+    
     if (isAuthenticated) {
-      router.replace("/(protected-tabs)");
+      if (!user?.cityId) {
+        router.replace("/(auth)/registration-city");
+      } else {
+        router.replace("/(protected-tabs)");
+      }
     } else if (isFirstEnter) {
       router.replace("/(auth)/onboarding");
     } else {

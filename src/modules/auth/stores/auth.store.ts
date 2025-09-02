@@ -1,9 +1,12 @@
 // Store для управления состоянием авторизации
-import { IUserDto } from '@/src/shared/api/types/data-contracts';
-import { AuthState } from '@/src/shared/types/auth';
-import { getStorageIsFirstEnter, setStorageIsFirstEnter } from '@/src/shared/utils/isFirstEnter';
-import { removeRefreshToken, removeToken } from '@/src/shared/utils/token';
-import { create } from 'zustand';
+import { IUserDto } from "@/src/shared/api/types/data-contracts";
+import { AuthState, RegistrationData } from "@/src/shared/types/auth";
+import {
+  getStorageIsFirstEnter,
+  setStorageIsFirstEnter,
+} from "@/src/shared/utils/isFirstEnter";
+import { removeRefreshToken, removeToken } from "@/src/shared/utils/token";
+import { create } from "zustand";
 
 interface AuthStore extends AuthState {
   logout: () => Promise<void>;
@@ -11,6 +14,7 @@ interface AuthStore extends AuthState {
   setIsFirstEnter: (isFirstEnter: boolean) => void;
   setAuth: (user: IUserDto) => void;
   setIsInitialized: () => void;
+  setRegistrationData: (registrationData: RegistrationData) => void;
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -19,10 +23,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   isLoading: false,
   isFirstEnter: true,
+  registrationData: null,
+
+  setRegistrationData: (registrationData: RegistrationData) => {
+    set({ registrationData });
+  },
 
   setIsInitialized: () => {
     getStorageIsFirstEnter().then((isFirstEnter) => {
-      set({ isInitialized: true, isFirstEnter: isFirstEnter !== 'false' });
+      set({ isInitialized: true, isFirstEnter: isFirstEnter !== "false" });
     });
   },
 
@@ -34,6 +43,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       set({
         isAuthenticated: false,
         user: null,
+        registrationData: null,
         isLoading: false,
       });
     } catch (error) {
@@ -53,7 +63,13 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   setAuth: (user: IUserDto) => {
+    set({ registrationData: {
+      name: user.name,
+      email: user.email,
+      password: "",
+      role: user.role as "owner" | "club_admin",
+      cityId: user.cityId,
+    }});
     set({ user, isAuthenticated: true, isLoading: false });
   },
 }));
-

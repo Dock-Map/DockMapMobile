@@ -75,5 +75,9 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSSupportsAutomaticPasswordGeneration</key>
+    <false/>
+    <key>NSSupportsAutomaticStrongPasswords</key>
+    <false/>
   </dict>
 </plist>

@@ -17,6 +17,8 @@ import { CityDto } from '../../shared/api/types/data-contracts';
 import Button from '@components/ui-kit/button';
 import Input from '@components/ui-kit/input';
 import { ArrowLeftIcon } from '../../shared/components/icons';
+import { useAuthStore } from '../../modules/auth/stores/auth.store';
+import { useCompleteRegistration } from '@/src/modules/auth/api/use-complete-registration';
 
 const RegistrationCityScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
@@ -25,10 +27,12 @@ const RegistrationCityScreen: React.FC = () => {
   const [filteredCities, setFilteredCities] = useState<CityDto[]>([]);
   const [pressedItemId, setPressedItemId] = useState<number | null>(null);
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+
+  const { registrationData } = useAuthStore();
   
   const { data: cities = [], isLoading, error } = useGetCities();
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+  const { mutateAsync: completeRegistration } = useCompleteRegistration();
   const styles = createStyles({ colors, sizes, fonts, weights });
 
   useEffect(() => {
@@ -88,13 +92,12 @@ const RegistrationCityScreen: React.FC = () => {
 
   const handleContinue = () => {
     if (selectedCityId && selectedCity) {
-      (global as any).registrationData = {
-        ...(global as any).registrationData,
+      completeRegistration({
         cityId: selectedCityId,
-        cityName: selectedCity,
-      };
-      
-      router.replace('/(protected-tabs)' as any);
+        role: registrationData?.role as "owner",
+      }).then(() => {
+        router.replace('/(protected-tabs)' as any);
+      });
     }
   };
 

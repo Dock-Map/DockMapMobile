@@ -10,7 +10,7 @@ import {
   ViewStyle
 } from 'react-native';
 import { useTheme } from '../../use-theme';
-import { DotIcon, ErrorIcon, EyeOpenIcon, LockKeyIcon, MailIcon, SearchIcon, UserIcon, XCircle20Icon } from '../icons';
+import { ErrorIcon, EyeOpenIcon, LockKeyIcon, MailIcon, SearchIcon, UserIcon, XCircle20Icon } from '../icons';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
   state?: 'default' | 'error' | 'success' | 'disabled' | 'active' | 'filled';
@@ -178,13 +178,6 @@ const Input: React.FC<InputProps> = ({
         
                         {/* Поле ввода с кнопкой переключения видимости */}
                 <View style={styles.inputRow}>
-                  {shouldShowErrorDots ? (
-                    <View style={styles.passwordDotsContainer}>
-                      {Array.from({ length: value?.length || 0 }).map((_, index) => (
-                        <DotIcon key={index} width={4} height={4} color="#F53F3F" />
-                      ))}
-                    </View>
-                  ) : (
                     <TextInput
                       style={[
                         styles.textInput,
@@ -192,9 +185,7 @@ const Input: React.FC<InputProps> = ({
                           fontFamily: fonts.text2,
                           fontWeight: weights.normal,
                           fontSize: 16, 
-                          lineHeight: 24,
-                          letterSpacing: -0.5,
-                          color: inputStyleFromState.color,
+                          color: shouldShowErrorDots ? colors.red : inputStyleFromState.color,
                         },
                         inputStyle,
                       ]}
@@ -210,7 +201,6 @@ const Input: React.FC<InputProps> = ({
                       keyboardType={type === 'mail' ? 'email-address' : 'default'}
                       {...props}
                     />
-                  )}
                   
                   {/* Кнопка переключения видимости пароля */}
                   {shouldShowPasswordToggle && (

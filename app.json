@@ -11,7 +11,11 @@
     "ios": {
       "scheme": "dockmap",
       "supportsTablet": true,
-      "bundleIdentifier": "com.sosmobile.mobile"
+      "bundleIdentifier": "com.sosmobile.mobile",
+      "infoPlist": {
+        "NSSupportsAutomaticPasswordGeneration": false,
+        "NSSupportsAutomaticStrongPasswords": false
+      }
     },
     "android": {
       "adaptiveIcon": {

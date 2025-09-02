@@ -20,6 +20,7 @@ export type IUserDto = {
   name: string;
   phone: string;
   email: string;
+  cityId: number;
   telegramChatId: string;
   authProvider: AuthProvider;
   providerId: string;
