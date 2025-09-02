@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "space-between",
     paddingHorizontal: 24,
     paddingTop: 24,
     paddingBottom: 24,

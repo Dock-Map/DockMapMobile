@@ -121,13 +121,13 @@ export const RegistrationDataScreen: React.FC = () => {
                   {hasMinLength ? (
                     <CheckIcon width={16} height={16} color="#4ADE80" />
                   ) : (
-                    <InfoCircleIcon width={16} height={16} color="#A1B0CA" />
+                    <InfoCircleIcon width={16} height={16} color={String(colors.grey500)} />
                   )}
                   <Text
                     style={[
                       styles.ruleText,
                       {
-                        color: hasMinLength ? "#4ADE80" : "#A1B0CA",
+                        color: hasMinLength ? "#4ADE80" : colors.grey500,
                       },
                     ]}
                   >
@@ -138,13 +138,13 @@ export const RegistrationDataScreen: React.FC = () => {
                   {hasDigit ? (
                     <CheckIcon width={16} height={16} color="#4ADE80" />
                   ) : (
-                    <InfoCircleIcon width={16} height={16} color="#A1B0CA" />
+                    <InfoCircleIcon width={16} height={16} color={String(colors.grey500)} />
                   )}
                   <Text
                     style={[
                       styles.ruleText,
                       {
-                        color: hasDigit ? "#4ADE80" : "#A1B0CA",
+                        color: hasDigit ? "#4ADE80" : colors.grey500,
                       },
                     ]}
                   >
@@ -155,13 +155,13 @@ export const RegistrationDataScreen: React.FC = () => {
                   {hasUpperCase ? (
                     <CheckIcon width={16} height={16} color="#4ADE80" />
                   ) : (
-                    <InfoCircleIcon width={16} height={16} color="#A1B0CA" />
+                    <InfoCircleIcon width={16} height={16} color={String(colors.grey500)} />
                   )}
                   <Text
                     style={[
                       styles.ruleText,
                       {
-                        color: hasUpperCase ? "#4ADE80" : "#A1B0CA",
+                        color: hasUpperCase ? "#4ADE80" : colors.grey500,
                       },
                     ]}
                   >
@@ -191,7 +191,7 @@ export const RegistrationDataScreen: React.FC = () => {
               }}
             >
               {agreeToTerms ? (
-                <CheckBoxIcon width={18} height={18} color="#19A7E9" />
+                <CheckBoxIcon width={18} height={18} color={String(colors.primary500)} />
               ) : (
                 <View style={styles.checkboxEmpty} />
               )}
@@ -200,6 +200,8 @@ export const RegistrationDataScreen: React.FC = () => {
               Я принимаю Условия использования и Политику конфиденциальности
             </Text>
           </View>
+
+
         </View>
 
         {/* Кнопка продолжить */}
@@ -240,22 +242,23 @@ const createStyles = ({
     formContainer: {
       flex: 1,
       gap: 24,
+      paddingBottom: 32,
     },
     headerContainer: {
       alignItems: "center",
       gap: 8,
     },
     title: {
-      fontFamily: "Onest",
-      fontWeight: "500",
+      fontFamily: fonts.h2,
+      fontWeight: weights.medium,
       fontSize: 20,
       lineHeight: 28,
       letterSpacing: -0.5,
       textAlign: "center",
     },
     subtitle: {
-      fontFamily: "Onest",
-      fontWeight: "400",
+      fontFamily: fonts.text2,
+      fontWeight: weights.normal,
       fontSize: 16,
       lineHeight: 24,
       letterSpacing: -0.5,
@@ -277,8 +280,8 @@ const createStyles = ({
       gap: 4,
     },
     ruleText: {
-      fontFamily: "Onest",
-      fontWeight: "400",
+      fontFamily: fonts.text3,
+      fontWeight: weights.normal,
       fontSize: 12,
       lineHeight: 16,
     },
@@ -286,32 +289,35 @@ const createStyles = ({
       flexDirection: "row",
       alignItems: "flex-start",
       gap: 8,
+      marginTop: 8,
     },
     checkboxEmpty: {
       width: 18,
       height: 18,
       borderRadius: 3,
       borderWidth: 1,
-      borderColor: "#EAF0F6",
-      backgroundColor: "#EAF0F6",
+      borderColor: colors.grey200,
+      backgroundColor: colors.grey200,
       marginTop: 3,
     },
     agreementText: {
       flex: 1,
-      fontFamily: "Onest",
-      fontWeight: "400",
+      fontFamily: fonts.text2,
+      fontWeight: weights.normal,
       fontSize: 14,
       lineHeight: 20,
     },
     buttonContainer: {
       paddingHorizontal: 8,
       paddingBottom: 8,
+      marginTop: 16,
     },
+
     continueButton: {
       borderRadius: 16,
     },
     disabledButton: {
-      backgroundColor: "#EFF3F8",
+      backgroundColor: colors.grey100,
     },
   });
 

@@ -116,8 +116,8 @@ export const registrationDataSchema = yup.object({
     .oneOf([yup.ref('password')], 'Пароли должны совпадать'),
   agreeToTerms: yup
     .boolean()
-    .required('Необходимо принять условия использования')
-    .oneOf([true], 'Необходимо принять условия использования')
+    .required('')
+    .oneOf([true], '')
 });
 
 export type RegistrationDataFormData = yup.InferType<typeof registrationDataSchema>;
