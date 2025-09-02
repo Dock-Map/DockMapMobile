@@ -16,9 +16,13 @@ import Button from '@components/ui-kit/button';
 import OnboardingPagination from '@components/ui-kit/onboarding-pagination';
 import OnboardingSlide from '@components/ui-kit/onboarding-slide';
 import { router } from 'expo-router';
+import { BlurView } from 'expo-blur';
+
+import imgCard2 from '@/assets/images/cardOnboarding2.png';
 
 const { width } = Dimensions.get('window');
-const slideInnerWidth = width;
+
+
 
 const OnboardingScreen: React.FC = () => {
   const { colors, fonts, weights, sizes } = useTheme();
@@ -26,7 +30,7 @@ const OnboardingScreen: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
-  
+
   const styles = getStyles(colors);
 
   const slides: OnboardingSlideType[] = [
@@ -34,19 +38,19 @@ const OnboardingScreen: React.FC = () => {
       id: 1,
       title: 'Добро пожаловать\nв Dock Map',
       description: 'Быстрое бронирование причалов\nи управление сервисами',
-      image: 'welcome',
+      image: '',
     },
     {
       id: 2,
       title: 'Мгновенный поиск швартовок',
       description: 'Выбирайте клуб по карте, проверяйте\n доступные места и бронируйте причал\n в пару кликов',
-      image: 'search',
+      image: imgCard2,
     },
     {
       id: 3,
       title: 'Управление услугами',
       description: 'От построения интерактивной карты\n причала до управления бронированиями\n и расписанием',
-      image: 'services',
+      image: '',
     },
   ];
 
@@ -78,23 +82,7 @@ const OnboardingScreen: React.FC = () => {
     }
   };
 
-  const renderSlideContent = (slide: OnboardingSlideType) => {
-    switch (slide.image) {
-      case 'welcome':
-        return null;
-      case 'search':
-        return (
-          <Image
-            source={require('@/assets/images/onboarding-slide-2.png')}
-            style={styles.searchImage}
-          />
-        );
-      case 'services':
-        return null;
-      default:
-        return null;
-    }
-  };
+
 
   const renderBackgroundCircles = (slide: OnboardingSlideType) => {
     return <BackgroundCircles variant={slide.image as any} />;
@@ -102,66 +90,74 @@ const OnboardingScreen: React.FC = () => {
 
   return (
     <View style={styles.fullScreenContainer}>
-      {/* Фоновые круги для текущего слайда */}
+
       <View style={styles.backgroundContainer}>
+
         {renderBackgroundCircles(slides[currentSlide])}
       </View>
-      
+
       <SafeAreaView style={styles.container}>
         <View style={styles.mainContent}>
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          style={styles.scrollView}
-        >
-          {slides.map((slide, index) => (
-            <View key={slide.id} style={[styles.slide, { width }]}>
-              <OnboardingSlide
-                title={slide.title}
-                description={slide.description}
-                pagination={
-                  <OnboardingPagination
-                    totalSlides={slides.length}
-                    currentSlide={currentSlide}
-                  />
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            style={styles.scrollView}
+          >
+
+            {slides.map((slide, index) => (
+              <View key={slide.id} style={[styles.slide, { width }]}>
+                <OnboardingSlide
+                  title={slide.title}
+                  description={slide.description}
+                  image={slide.image}
+                  pagination={
+                    <OnboardingPagination
+                      totalSlides={slides.length}
+                      currentSlide={currentSlide}
+                    />
+                  }
+                >
+
+                  {/* <BlurView
+                    intensity={20}
+                    experimentalBlurMethod="dimezisBlurView"
+                    style={styles.blurOverlay}
+                  /> */}
+                </OnboardingSlide>
+
+              </View>
+            ))}
+          </ScrollView>
+          <View style={styles.bottomSection}>
+            <View style={styles.buttonContainer}>
+              {currentSlide < slides.length - 1 && (
+                <Button
+                  type="secondary"
+                  onPress={handleSkip}
+                  containerStyle={styles.skipButton}
+                >
+                  Пропустить
+                </Button>
+              )}
+
+              <Button
+                type="primary"
+                onPress={handleNext}
+                containerStyle={
+                  currentSlide === slides.length - 1
+                    ? styles.startButton
+                    : styles.nextButton
                 }
               >
-                {renderSlideContent(slide)}
-              </OnboardingSlide>
-            </View>
-          ))}
-        </ScrollView>
-
-        <View style={styles.bottomSection}>
-          <View style={styles.buttonContainer}>
-            {currentSlide < slides.length - 1 && (
-              <Button
-                type="secondary"
-                onPress={handleSkip}
-                containerStyle={styles.skipButton}
-              >
-                Пропустить
+                {currentSlide === slides.length - 1 ? 'Начать' : 'Далее'}
               </Button>
-            )}
-            
-            <Button
-              type="primary"
-              onPress={handleNext}
-              containerStyle={
-                currentSlide === slides.length - 1 
-                  ? styles.startButton 
-                  : styles.nextButton
-              }
-            >
-              {currentSlide === slides.length - 1 ? 'Начать' : 'Далее'}
-            </Button>
+            </View>
           </View>
         </View>
-      </View>
       </SafeAreaView>
     </View>
   );
@@ -171,6 +167,18 @@ const getStyles = (colors: any) => StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
     backgroundColor: colors.background,
+    position: 'relative',
+  },
+  blurOverlay: {
+    zIndex: 99,
+
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 200,
+
+    height: "100%",
   },
   container: {
     flex: 1,
@@ -180,6 +188,7 @@ const getStyles = (colors: any) => StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     overflow: 'visible',
+    position: 'relative',
   },
   scrollView: {
     flex: 1,
@@ -187,11 +196,13 @@ const getStyles = (colors: any) => StyleSheet.create({
   },
   backgroundContainer: {
     position: 'absolute',
+    width: "100%",
+    height: "100%",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 0,
+
   },
   slide: {
     alignItems: 'center',
