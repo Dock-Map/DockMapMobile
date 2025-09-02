@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@components/ui-kit/error-boundary";
+import Loading from "@components/ui-kit/loading";
 import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
@@ -16,43 +17,52 @@ const RootStack = () => {
   const {
     isAuthenticated,
     isLoading,
+    isCheckingAuth,
     isFirstEnter,
     isInitialized,
     setIsInitialized,
     setAuth,
+    setCheckingAuth,
     user
   } = useAuthStore();
 
   const { data: userMe, isLoading: isLoadingGetMe } = useGetMe();
-  
+
   useEffect(() => {
     if (!isInitialized || isLoading) {
       return;
     }
+
     if (userMe) {
       setAuth(userMe);
+    } else if (!isLoadingGetMe) {
+      setCheckingAuth(false);
     }
-    
+
     if (isAuthenticated) {
       console.log(user?.cityId, "user?.cityIduser?.cityIduser?.cityIduser?.cityIduser?.cityId");
-      
+
       if (!user?.cityId) {
         router.replace("/(auth)/registration-city");
       } else {
         router.replace("/(protected-tabs)");
       }
-    } else if (isFirstEnter) {
+    } else if (isFirstEnter && !isCheckingAuth) {
       router.replace("/(auth)/onboarding");
-    } else {
+    } else if (!isCheckingAuth) {
       router.replace("/(auth)");
     }
-  }, [isAuthenticated, isLoading, isFirstEnter, user, setAuth, isInitialized, userMe]);
+  }, [isAuthenticated, isLoading, isFirstEnter, user, setAuth, isInitialized, userMe, isLoadingGetMe, isCheckingAuth, setCheckingAuth]);
 
   useEffect(() => {
     if (!isInitialized) {
       setIsInitialized();
     }
   }, []);
+
+  if (isCheckingAuth) {
+    return <Loading />;
+  }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

@@ -16,7 +16,7 @@ import Button from '@components/ui-kit/button';
 import OnboardingPagination from '@components/ui-kit/onboarding-pagination';
 import OnboardingSlide from '@components/ui-kit/onboarding-slide';
 import { router } from 'expo-router';
-import { BlurView } from 'expo-blur';
+// import { BlurView } from 'expo-blur';
 
 import imgCard2 from '@/assets/images/cardOnboarding2.png';
 

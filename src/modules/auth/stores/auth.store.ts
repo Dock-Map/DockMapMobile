@@ -15,6 +15,7 @@ interface AuthStore extends AuthState {
   setAuth: (user: IUserDto) => void;
   setIsInitialized: () => void;
   setRegistrationData: (registrationData: RegistrationData) => void;
+  setCheckingAuth: (isChecking: boolean) => void;
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -22,11 +23,16 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isInitialized: false,
   user: null,
   isLoading: false,
+  isCheckingAuth: true,
   isFirstEnter: true,
   registrationData: null,
 
   setRegistrationData: (registrationData: RegistrationData) => {
     set({ registrationData });
+  },
+
+  setCheckingAuth: (isChecking: boolean) => {
+    set({ isCheckingAuth: isChecking });
   },
 
   setIsInitialized: () => {
@@ -53,6 +59,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   setIsFirstEnter: (isFirstEnter: boolean) => {
+    console.log("isFirstEnter", isFirstEnter);
     setStorageIsFirstEnter(isFirstEnter).then(() => {
       set({ isFirstEnter });
     });
@@ -63,13 +70,21 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   setAuth: (user: IUserDto) => {
-    set({ registrationData: {
-      name: user.name,
-      email: user.email,
-      password: "",
-      role: user.role as "owner" | "club_admin",
-      cityId: user.cityId,
-    }});
-    set({ user, isAuthenticated: true, isLoading: false });
+    console.log("user", user);
+    set({
+      registrationData: {
+        name: user.name,
+        email: user.email,
+        password: "",
+        role: user.role as "owner" | "club_admin",
+        cityId: user.cityId,
+      },
+    });
+    set({
+      user,
+      isAuthenticated: true,
+      isLoading: false,
+      isCheckingAuth: false,
+    });
   },
 }));

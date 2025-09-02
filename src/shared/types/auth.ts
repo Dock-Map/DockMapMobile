@@ -1,12 +1,13 @@
 import { IUserDto } from "../api/types/data-contracts";
 
 export interface AuthState {
-    isAuthenticated: boolean;
-    user: IUserDto | null;
-    isInitialized: boolean;
-    isLoading: boolean;
-    isFirstEnter: boolean;
-    registrationData: RegistrationData | null;
+  isAuthenticated: boolean;
+  user: IUserDto | null;
+  isInitialized: boolean;
+  isLoading: boolean;
+  isCheckingAuth: boolean;
+  isFirstEnter: boolean;
+  registrationData: RegistrationData | null;
 }
 
 export interface RegistrationData {
