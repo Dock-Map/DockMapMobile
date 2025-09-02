@@ -112,8 +112,8 @@ const getStyles = (colors: any, fonts: any, weights: any) => StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontFamily: fonts.h1,
-    fontWeight: 600,
+    fontFamily: fonts.h2,
+    fontWeight: weights.h2,
     fontSize: 20,
     lineHeight: 28,
     letterSpacing: -0.5,
@@ -128,7 +128,6 @@ const getStyles = (colors: any, fonts: any, weights: any) => StyleSheet.create({
     letterSpacing: -0.5,
     textAlign: 'center',
     color: colors.grey900,
-    opacity: 0.8,
   },
 });
 
