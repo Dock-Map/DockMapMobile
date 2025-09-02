@@ -58,7 +58,7 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
 
       {/* Текстовая информация */}
       <View style={styles.textContainer}>
-        <Text style={[styles.title, titleStyle]}>
+        <Text style={styles.title}>
           {title}
         </Text>
         <Text style={[styles.description, descriptionStyle]}>
@@ -112,8 +112,8 @@ const getStyles = (colors: any, fonts: any, weights: any) => StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontFamily: fonts.h2,
-    fontWeight: weights.medium,
+    fontFamily: fonts.h1,
+    fontWeight: 600,
     fontSize: 20,
     lineHeight: 28,
     letterSpacing: -0.5,

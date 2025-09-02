@@ -1,21 +1,22 @@
 
 import React, { PropsWithChildren } from 'react'
-import { StyleSheet , KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 export const KeyboardScrollView: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <KeyboardAvoidingView
-    style={styles.keyboardAvoidingContainer}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-  >
-    <ScrollView
-      style={styles.content}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
+      style={styles.keyboardAvoidingContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      {children}
-    </ScrollView>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {children}
+      </ScrollView>
     </KeyboardAvoidingView>
   )
 }

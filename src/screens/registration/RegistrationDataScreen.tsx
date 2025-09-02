@@ -9,7 +9,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Linking,
+  Pressable
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -39,11 +41,11 @@ export const RegistrationDataScreen: React.FC = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<RegistrationDataFormData>({
     resolver: yupResolver(registrationDataSchema) as any,
-    mode: "onSubmit",
-    reValidateMode: "onBlur",
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       name: "",
       email: "",
@@ -53,7 +55,17 @@ export const RegistrationDataScreen: React.FC = () => {
     },
   });
 
+  const watchedFields = watch();
   const password = watch("password");
+
+  // Проверяем заполненность всех полей и валидность формы
+  const isFormValid =
+    watchedFields.name.trim() !== "" &&
+    watchedFields.email.trim() !== "" &&
+    watchedFields.password.trim() !== "" &&
+    watchedFields.confirmPassword.trim() !== "" &&
+    agreeToTerms &&
+    Object.keys(errors).length === 0;
 
   const onSubmit = async (data: any) => {
     try {
@@ -67,11 +79,19 @@ export const RegistrationDataScreen: React.FC = () => {
     }
   };
 
+  const openLink = async (url: string) => {
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      console.error("Не удалось открыть ссылку:", error);
+    }
+  };
+
   // Вычисляем валидность правил пароля
   const hasMinLength = password && password.length >= 8;
   const hasDigit = password && /\d/.test(password);
   const hasUpperCase = password && /[A-ZА-Я]/.test(password);
-// partial.lemming.jefd@rapidletter.net
+  // partial.lemming.jefd@rapidletter.net
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       {/* Top bar */}
@@ -95,14 +115,14 @@ export const RegistrationDataScreen: React.FC = () => {
               control={control}
               name="name"
               label="ФИО"
-              placeholder="Иванов Иван"
+              placeholder="Введите ФИО"
               error={errors.name}
             />
             <ControlledInput
               control={control}
               name="email"
               label="Почта"
-              placeholder="ivanov@gmail.com"
+              placeholder="Введите email"
               error={errors.email}
             />
 
@@ -111,7 +131,7 @@ export const RegistrationDataScreen: React.FC = () => {
                 control={control}
                 name="password"
                 label="Пароль"
-                placeholder="Ivanov1998"
+                placeholder="Введите пароль"
                 type="password"
                 error={errors.password}
               />
@@ -183,7 +203,7 @@ export const RegistrationDataScreen: React.FC = () => {
 
           {/* Чекбокс согласия */}
           <View style={styles.agreementContainer}>
-            <TouchableOpacity
+            <Pressable
               onPress={() => {
                 const newValue = !agreeToTerms;
                 setAgreeToTerms(newValue);
@@ -195,10 +215,29 @@ export const RegistrationDataScreen: React.FC = () => {
               ) : (
                 <View style={styles.checkboxEmpty} />
               )}
-            </TouchableOpacity>
-            <Text style={[styles.agreementText, { color: colors.grey900 }]}>
-              Я принимаю Условия использования и Политику конфиденциальности
-            </Text>
+            </Pressable>
+            <View style={styles.agreementTextContainer}>
+              <Text style={[styles.agreementText, { color: colors.grey900 }]}>
+                Я принимаю{" "}
+              </Text>
+              <Pressable
+                onPress={() => openLink("https://www.google.com/")}
+              >
+                <Text style={[styles.agreementText, styles.linkText, { color: colors.primary500 }]}>
+                  Условия использования
+                </Text>
+              </Pressable>
+              <Text style={[styles.agreementText, { color: colors.grey900 }]}>
+                {" "}и{" "}
+              </Text>
+              <Pressable
+                onPress={() => openLink("https://www.google.com/")}
+              >
+                <Text style={[styles.agreementText, styles.linkText, { color: colors.primary500 }]}>
+                  Политику конфиденциальности
+                </Text>
+              </Pressable>
+            </View>
           </View>
 
 
@@ -213,7 +252,11 @@ export const RegistrationDataScreen: React.FC = () => {
               handleSubmit(onSubmit)();
             }}
             isLoading={isPending}
-            style={styles.continueButton}
+            disabled={!isFormValid}
+            style={!isFormValid ?
+              { ...styles.continueButton, ...styles.disabledButton } :
+              styles.continueButton
+            }
           >
             Продолжить
           </Button>
@@ -300,12 +343,20 @@ const createStyles = ({
       backgroundColor: colors.grey200,
       marginTop: 3,
     },
-    agreementText: {
+    agreementTextContainer: {
       flex: 1,
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignItems: "center",
+    },
+    agreementText: {
       fontFamily: fonts.text2,
       fontWeight: weights.normal,
       fontSize: 14,
       lineHeight: 20,
+    },
+    linkText: {
+      textDecorationLine: "underline",
     },
     buttonContainer: {
       paddingHorizontal: 8,

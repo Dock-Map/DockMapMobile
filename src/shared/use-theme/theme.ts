@@ -35,7 +35,6 @@ export const ASSETS: any = {
   OnestRegular: require("../../../assets/fonts/Onest-Regular.ttf"),
   OnestMedium: require("../../../assets/fonts/Onest-Medium.ttf"),
   OnestBold: require("../../../assets/fonts/Onest-Bold.ttf"),
-  OnestVariable: require("../../../assets/fonts/Onest-Variable.ttf"),
 };
 
 export const FONTS: ThemeFonts = {

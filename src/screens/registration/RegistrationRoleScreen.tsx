@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ScrollView
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -52,7 +52,7 @@ const RegistrationRoleScreen: React.FC = () => {
       <TopBar title="Регистрация" badge="1" maxBadge="3" />
 
       {/* Основной контент */}
-      <ScrollView 
+      <ScrollView
         style={styles.content}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -84,9 +84,10 @@ const RegistrationRoleScreen: React.FC = () => {
                   styles.roleIconContainer,
                   role.active && styles.roleIconContainerActive
                 ]}>
-                  <role.icon 
-                    width={24} 
+                  <role.icon
+                    width={24}
                     height={24}
+
                   />
                 </View>
 
@@ -124,11 +125,11 @@ const RegistrationRoleScreen: React.FC = () => {
   );
 };
 
-const createStyles = ({ 
-  colors, 
-  sizes, 
-  fonts, 
-  weights 
+const createStyles = ({
+  colors,
+  sizes,
+  fonts,
+  weights
 }: {
   colors: ThemeColors;
   sizes: any;
@@ -209,6 +210,7 @@ const createStyles = ({
     alignSelf: 'flex-start',
   },
   roleIconContainerActive: {
+    borderRadius: 100,
     backgroundColor: colors.white,
   },
   roleContent: {
@@ -218,7 +220,7 @@ const createStyles = ({
     width: '100%',
   },
   roleTitle: {
-    fontFamily: fonts.text3, 
+    fontFamily: fonts.text3,
     fontWeight: weights.medium,
     fontSize: 14,
     lineHeight: 20,

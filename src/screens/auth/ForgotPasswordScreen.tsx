@@ -22,9 +22,9 @@ import { TopBar } from '../../shared/components/molecules/TopBar';
 
 const ForgotPasswordScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
-  
+
   const { mutateAsync: resetPasswordRequest, isPending } = useResetPasswordRequest();
-  
+
   const {
     control,
     handleSubmit,
@@ -34,13 +34,13 @@ const ForgotPasswordScreen: React.FC = () => {
     mode: 'onSubmit',
     reValidateMode: 'onBlur',
   });
-  
+
   const styles = createStyles({ colors, sizes, fonts, weights });
 
   const onSubmit = async (data: ResetPasswordRequestFormData) => {
     try {
       await resetPasswordRequest(data);
-      
+
       router.push(`/(auth)/(forgot-password)/forgot-password-confirmation?email=${encodeURIComponent(data.email)}` as any);
     } catch (error) {
       console.error('Ошибка при отправке запроса на восстановление пароля:', error);
@@ -58,7 +58,7 @@ const ForgotPasswordScreen: React.FC = () => {
             Введите email, привязанный к аккаунту,{'\n'} чтобы восстановить доступ
           </Text>
         </View>
-        
+
         <View style={styles.inputContainer}>
           <ControlledInput
             control={control}
@@ -73,7 +73,7 @@ const ForgotPasswordScreen: React.FC = () => {
         <Button
           type="primary"
           onPress={handleSubmit(onSubmit)}
-          disabled={isPending}
+          disabled={isPending || !isValid}
           isLoading={isPending}
           containerStyle={styles.continueButton}
         >
@@ -84,11 +84,11 @@ const ForgotPasswordScreen: React.FC = () => {
   );
 };
 
-const createStyles = ({ 
-  colors, 
-  sizes, 
-  fonts, 
-  weights 
+const createStyles = ({
+  colors,
+  sizes,
+  fonts,
+  weights
 }: {
   colors: ThemeColors;
   sizes: any;
