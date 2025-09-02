@@ -1,34 +1,30 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import Button from "../../shared/components/ui-kit/button";
-import ControlledInput from "../../shared/components/ui-kit/controlled-input";
-import { useTheme } from "../../shared/use-theme";
-import {
-  ArrowLeftIcon,
-  CheckIcon,
-  InfoCircleIcon,
-  CheckBoxIcon,
-} from "../../shared/components/icons";
-import {
-  registrationDataSchema,
-  RegistrationDataFormData,
-} from "../../shared/schemas/auth-schemas";
 import { useSignUpWithEmail } from "@/src/modules/auth/api/use-sign-up-with-email";
 import { useAuthStore } from "@/src/modules/auth/stores/auth.store";
-import { KeyboardScrollView } from "../auth/ui/KeyboardScrollView";
 import { TopBar } from '@/src/shared/components/molecules/TopBar';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  CheckBoxIcon,
+  CheckIcon,
+  InfoCircleIcon
+} from "../../shared/components/icons";
+import Button from "../../shared/components/ui-kit/button";
+import ControlledInput from "../../shared/components/ui-kit/controlled-input";
+import {
+  RegistrationDataFormData,
+  registrationDataSchema,
+} from "../../shared/schemas/auth-schemas";
+import { useTheme } from "../../shared/use-theme";
+import { KeyboardScrollView } from "../auth/ui/KeyboardScrollView";
 
 export const RegistrationDataScreen: React.FC = () => {
   const { colors, fonts, weights, sizes } = useTheme();
@@ -242,6 +238,7 @@ const createStyles = ({
       backgroundColor: colors.background,
     },
     formContainer: {
+      flex: 1,
       gap: 24,
     },
     headerContainer: {
