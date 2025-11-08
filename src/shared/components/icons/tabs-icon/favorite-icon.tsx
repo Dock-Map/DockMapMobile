@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgXml, XmlProps } from "react-native-svg";
 
-export const FavoriteIcon = (props: Omit<XmlProps, "xml">) => {
+const FavoriteIconComponent = (props: Omit<XmlProps, "xml">) => {
   return (
     <SvgXml
       {...props}
@@ -12,3 +12,5 @@ export const FavoriteIcon = (props: Omit<XmlProps, "xml">) => {
     />
   );
 };
+
+export const FavoriteIcon = React.memo(FavoriteIconComponent);

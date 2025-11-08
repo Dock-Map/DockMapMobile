@@ -4,7 +4,7 @@ import { ApiRequest } from "@/src/shared/api/types/native-types-api";
 import { api } from "@/src/shared/api/utils/axios-api-base";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { toast } from "sonner-native";
+import { showToast } from "@/src/shared/utils/show-toast";
 
 export interface VerifyResetCodeDto {
   email: string;
@@ -21,10 +21,10 @@ export const useVerifyResetCode = () => {
     mutationKey: [MutationKey.VERIFY_RESET_CODE],
     mutationFn: verifyResetCode,
     onSuccess: (data) => {
-      toast.success(data.message || 'Код подтвержден. Можете установить новый пароль');
+      showToast.success(data.message || 'Код подтвержден. Можете установить новый пароль');
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error?.response?.data?.message || 'Неверный код или код истек');
+      showToast.error(error?.response?.data?.message || 'Неверный код или код истек');
     }
   });
 };

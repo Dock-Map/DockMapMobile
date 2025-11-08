@@ -1,10 +1,12 @@
 import { AppointmentsIcon } from "@/src/shared/components/icons/tabs-icon/apoitments-icon";
+import { ChatIcon } from "@/src/shared/components/icons/tabs-icon/chat-icon";
 import { FavoriteIcon } from "@/src/shared/components/icons/tabs-icon/favorite-icon";
 import { HomeIcon } from "@/src/shared/components/icons/tabs-icon/home-icon";
 import { ProfileIcon } from "@/src/shared/components/icons/tabs-icon/profile-icon";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,34 +14,90 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function ProtectedLayout() {
   const { width: screenWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const isMountedRef = useRef(true);
 
-  return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-      }}
-      tabBar={({ state, descriptors, navigation }) => {
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  // Мемоизируем функции иконок
+  const homeIcon = useCallback(
+    ({ color, size }: any) => <HomeIcon color={color} />,
+    []
+  );
+  const appointmentsIcon = useCallback(
+    ({ color, size }: any) => <AppointmentsIcon color={color} />,
+    []
+  );
+  const favoriteIcon = useCallback(
+    ({ color, size }: any) => <FavoriteIcon color={color} />,
+    []
+  );
+  const chatIcon = useCallback(
+    ({ color, size }: any) => <ChatIcon color={color} />,
+    []
+  );
+  const profileIcon = useCallback(
+    ({ color, size }: any) => <ProfileIcon color={color} />,
+    []
+  );
+
+  const tabBar = useMemo(
+    () => {
+      const TabBarComponent = ({ state, descriptors, navigation }: any) => {
+        if (!isMountedRef.current) {
+          return null;
+        }
+
+        // Проверяем, есть ли вложенные маршруты в активном табе
+        const activeRoute = state.routes[state.index];
+        const activeRouteState = activeRoute?.state;
+        const hasNestedRoutes = activeRouteState && activeRouteState.index > 0;
+        const isNestedScreen = activeRouteState?.routes?.length > 1;
+
+        // Скрываем таб-бар, если находимся на вложенном экране
+        if (hasNestedRoutes || isNestedScreen) {
+          return null;
+        }
+
         return (
           <View
             style={{ position: "relative", backgroundColor: "transparent" }}
           >
             <LinearGradient
               colors={["rgba(25, 167, 233, 0.12)", "rgba(25, 167, 233, 0.16)"]}
+              style={{
+                height: 90,
+                width: "100%",
+              }}
             >
               <BlurView
                 intensity={20}
+                tint="light"
                 style={{
                   height: 90,
                   width: "100%",
                   paddingHorizontal: 16,
                 }}
-              ></BlurView>
+              />
             </LinearGradient>
             <View
               style={{
                 backgroundColor: "white",
                 zIndex: 1000,
-                boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.1)",
+                // iOS shadow
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 10,
+                // Android shadow
+                elevation: 5,
                 position: "absolute",
                 width: "90%",
                 top: -insets.bottom + 10,
@@ -47,13 +105,13 @@ export default function ProtectedLayout() {
                 transform: [{ translateX: -(screenWidth * 0.45) }],
                 borderRadius: 24,
                 flexDirection: "row",
-                gap: 40,
+                gap: 20,
                 justifyContent: "space-evenly",
                 paddingVertical: 12,
                 paddingHorizontal: 16,
               }}
             >
-              {state.routes.map((route, index) => {
+              {state.routes.map((route: any, index: number) => {
                 const { options } = descriptors[route.key];
                 const isFocused = state.index === index;
 
@@ -62,8 +120,8 @@ export default function ProtectedLayout() {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      minWidth: 42,
-                      minHeight: 42,
+                      minWidth: 40,
+                      minHeight: 40,
                       gap: 5,
                     }}
                     onPress={() => navigation.navigate(route.name)}
@@ -97,34 +155,53 @@ export default function ProtectedLayout() {
             </View>
           </View>
         );
+      };
+      TabBarComponent.displayName = 'TabBar';
+      return TabBarComponent;
+    },
+    [screenWidth, insets]
+  );
+
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
       }}
+      tabBar={tabBar}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => <HomeIcon color={color} />,
+          tabBarIcon: homeIcon,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: "Search",
-          tabBarIcon: ({ color, size }) => <AppointmentsIcon color={color} />,
+          tabBarIcon: appointmentsIcon,
         }}
       />
       <Tabs.Screen
         name="favorite"
         options={{
           title: "Favorite",
-          tabBarIcon: ({ color, size }) => <FavoriteIcon color={color} />,
+          tabBarIcon: favoriteIcon,
+        }}
+      />
+      <Tabs.Screen
+        name="chats"
+        options={{
+          title: "Chats",
+          tabBarIcon: chatIcon,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) => <ProfileIcon color={color} />,
+          tabBarIcon: profileIcon,
         }}
       />
     </Tabs>

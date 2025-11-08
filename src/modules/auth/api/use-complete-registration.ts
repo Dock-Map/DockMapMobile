@@ -6,7 +6,7 @@ import { ApiRequest } from "@/src/shared/api/types/native-types-api";
 import { api } from "@/src/shared/api/utils/axios-api-base";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { toast } from "sonner-native";
+import { showToast } from "@/src/shared/utils/show-toast";
 
 
 export const useCompleteRegistration = () => {
@@ -24,7 +24,7 @@ export const useCompleteRegistration = () => {
             }
         },
         onError: (error: AxiosError<{ message: string }>) => {
-            toast.error(error?.response?.data?.message || 'An error occurred', {duration: 10000});
+            showToast.error(error?.response?.data?.message || 'An error occurred', {duration: 10000});
         }
     });
 };

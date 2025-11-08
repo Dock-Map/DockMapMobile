@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgXml, XmlProps } from "react-native-svg";
 
-export const AppointmentsIcon = (props: Omit<XmlProps, "xml">) => {
+const AppointmentsIconComponent = (props: Omit<XmlProps, "xml">) => {
   return (
     <SvgXml
       {...props}
@@ -13,3 +13,5 @@ export const AppointmentsIcon = (props: Omit<XmlProps, "xml">) => {
     />
   );
 };
+
+export const AppointmentsIcon = React.memo(AppointmentsIconComponent);

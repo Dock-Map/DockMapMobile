@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgXml, XmlProps } from "react-native-svg";
 
-export const HomeIcon = (props: Omit<XmlProps, "xml">) => {
+const HomeIconComponent = (props: Omit<XmlProps, "xml">) => {
   return (
     <SvgXml
       {...props}
@@ -15,3 +15,5 @@ export const HomeIcon = (props: Omit<XmlProps, "xml">) => {
     />
   );
 };
+
+export const HomeIcon = React.memo(HomeIconComponent);

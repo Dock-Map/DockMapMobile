@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgXml, XmlProps } from "react-native-svg";
 
-export const ProfileIcon = (props: Omit<XmlProps, "xml">) => {
+const ProfileIconComponent = (props: Omit<XmlProps, "xml">) => {
   return (
     <SvgXml
       {...props}
@@ -12,3 +12,5 @@ export const ProfileIcon = (props: Omit<XmlProps, "xml">) => {
     />
   );
 };
+
+export const ProfileIcon = React.memo(ProfileIconComponent);

@@ -4,7 +4,7 @@ import { ApiRequest } from "@/src/shared/api/types/native-types-api";
 import { api } from "@/src/shared/api/utils/axios-api-base";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { toast } from "sonner-native";
+import { showToast } from "@/src/shared/utils/show-toast";
 
 export interface ResetPasswordRequestDto {
   email: string;
@@ -20,10 +20,10 @@ export const useResetPasswordRequest = () => {
     mutationKey: [MutationKey.RESET_PASSWORD_REQUEST],
     mutationFn: resetPasswordRequest,
     onSuccess: (data) => {
-      toast.success(data.message || 'Код для сброса пароля отправлен на email');
+      showToast.success(data.message || 'Код для сброса пароля отправлен на email');
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error?.response?.data?.message || 'Ошибка при отправке кода');
+      showToast.error(error?.response?.data?.message || 'Ошибка при отправке кода');
     }
   });
 };
