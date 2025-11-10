@@ -1,10 +1,16 @@
 import { SettingsIcon } from "@/src/shared/components/icons/SettingsIcon";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
 export const SettingsButton = () => {
+  const router = useRouter();
+  const onPress = () => {
+    router.push("/(protected-tabs)/chats/settings" as any);
+  };
+
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
       <SettingsIcon />
     </TouchableOpacity>
   );

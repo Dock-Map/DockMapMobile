@@ -6,6 +6,7 @@ export default function ChatsLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="booking" />
+      <Stack.Screen name="settings" />
       <Stack.Screen name="[id]" />
     </Stack>
   );

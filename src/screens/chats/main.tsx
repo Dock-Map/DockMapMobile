@@ -5,6 +5,7 @@ import { ReadAllMessageButton } from "./ui/read-all";
 import { SettingsButton } from "./ui/settings-button";
 import { SupportButton } from "./ui/support-button";
 import { NotificationsList } from "./ui/notifications-list";
+import { EmptyPage } from "./ui/empty-page";
 
 interface NotificationItem {
   id: string;
@@ -51,6 +52,8 @@ export default function ChatsScreen() {
     const notification = mockNotifications.find((n) => n.id === id);
     if (notification?.type === "booking") {
       router.push("/(protected-tabs)/chats/booking" as any);
+    } else if (notification?.type === "system") {
+      router.push("/(protected-tabs)/chats/settings" as any);
     } else {
       console.log("Notification pressed:", id);
     }
@@ -76,10 +79,16 @@ export default function ChatsScreen() {
         showsVerticalScrollIndicator={true}
       >
         <View style={styles.notificationsWrapper}>
-          <NotificationsList
-            notifications={mockNotifications}
-            onNotificationPress={handleNotificationPress}
-          />
+          {
+            mockNotifications.length > 0 ? (
+              <NotificationsList
+                notifications={mockNotifications}
+                onNotificationPress={handleNotificationPress}
+              />
+            ) : (
+              <EmptyPage />
+            )
+          }
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -94,6 +103,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     paddingVertical: 16,
+    marginBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
   },
