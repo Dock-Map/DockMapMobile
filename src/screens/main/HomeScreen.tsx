@@ -10,6 +10,7 @@ import BottomSheetModalBase from '@/src/shared/components/ui/bottom-sheet/Bottom
 import HomeHeader from './components/HomeHeader';
 import NearbySection from './components/NearbySection';
 import PopularSection from './components/PopularSection';
+import FiltersBottomSheet from './components/FiltersBottomSheet';
 import { NearbyClub, PopularClub } from './types';
 
 const HomeScreen: React.FC = () => {
@@ -23,6 +24,7 @@ const HomeScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const filtersSheetRef = useRef<BottomSheetModal>(null);
 
   const cityOptions = useMemo(
     () => [
@@ -121,9 +123,9 @@ const HomeScreen: React.FC = () => {
     console.log('Клуб:', clubId);
   };
 
-  const handleFilters = () => {
-    console.log('Фильтры');
-  };
+  const handleFilters = useCallback(() => {
+    filtersSheetRef.current?.present();
+  }, []);
 
   const toggleNearbyFavorite = useCallback((clubId: string) => {
     setFavoriteNearby((prev) => {
@@ -146,6 +148,10 @@ const HomeScreen: React.FC = () => {
   // close bottom sheet
   const closeCitySheet = useCallback(() => {
     bottomSheetRef.current?.dismiss();
+  }, []);
+
+  const closeFiltersSheet = useCallback(() => {
+    filtersSheetRef.current?.dismiss();
   }, []);
 
   // select new city
@@ -220,6 +226,7 @@ const HomeScreen: React.FC = () => {
             style={[props.style, styles.sheetBackdrop]}
           />
         )}
+        containerStyle={styles.citySheetContainer}
         backgroundStyle={styles.sheetBackground}
         handleStyle={styles.sheetHandle}
         handleIndicatorStyle={styles.sheetHandleIndicator}
@@ -277,6 +284,25 @@ const HomeScreen: React.FC = () => {
             );
           })}
         </ScrollView>
+      </BottomSheetModalBase>
+
+      <BottomSheetModalBase
+        ref={filtersSheetRef}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            style={[props.style, styles.sheetBackdrop]}
+          />
+        )}
+        handleComponent={() => null}
+        containerStyle={styles.filtersSheetContainer}
+        backgroundStyle={styles.filtersSheetBackground}
+        contentStyle={styles.filtersSheetContent}
+        enableDynamicSizing
+      >
+        <FiltersBottomSheet onClose={closeFiltersSheet} />
       </BottomSheetModalBase>
     </SafeAreaView>
   );
@@ -423,6 +449,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#19A7E9',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  filtersSheetBackground: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    borderWidth: 0.5,
+    borderColor: '#EFF3F8',
+    shadowColor: '#071013',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.04,
+    shadowRadius: 16,
+    elevation: 6,
+  },
+  filtersSheetContent: {
+    paddingBottom: 0,
+  },
+  filtersSheetContainer: {
+    zIndex: 100,
+  },
+  citySheetContainer: {
+    zIndex: 100,
   },
 });
 
