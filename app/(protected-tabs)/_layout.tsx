@@ -3,6 +3,7 @@ import { ChatIcon } from "@/src/shared/components/icons/tabs-icon/chat-icon";
 import { FavoriteIcon } from "@/src/shared/components/icons/tabs-icon/favorite-icon";
 import { HomeIcon } from "@/src/shared/components/icons/tabs-icon/home-icon";
 import { ProfileIcon } from "@/src/shared/components/icons/tabs-icon/profile-icon";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
@@ -87,7 +88,7 @@ export default function ProtectedLayout() {
             <View
               style={{
                 backgroundColor: "white",
-                zIndex: 1000,
+                zIndex: 0,
                 // iOS shadow
                 shadowColor: "#000",
                 shadowOffset: {
@@ -163,47 +164,49 @@ export default function ProtectedLayout() {
   );
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-      }}
-      tabBar={tabBar}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: homeIcon,
+    <BottomSheetModalProvider>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
         }}
-      />
-      <Tabs.Screen
-        name="search"
-        options={{
-          title: "Search",
-          tabBarIcon: appointmentsIcon,
-        }}
-      />
-      <Tabs.Screen
-        name="favorite"
-        options={{
-          title: "Favorite",
-          tabBarIcon: favoriteIcon,
-        }}
-      />
-      <Tabs.Screen
-        name="chats"
-        options={{
-          title: "Chats",
-          tabBarIcon: chatIcon,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: profileIcon,
-        }}
-      />
-    </Tabs>
+        tabBar={tabBar}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Home",
+            tabBarIcon: homeIcon,
+          }}
+        />
+        <Tabs.Screen
+          name="search"
+          options={{
+            title: "Search",
+            tabBarIcon: appointmentsIcon,
+          }}
+        />
+        <Tabs.Screen
+          name="favorite"
+          options={{
+            title: "Favorite",
+            tabBarIcon: favoriteIcon,
+          }}
+        />
+        <Tabs.Screen
+          name="chats"
+          options={{
+            title: "Chats",
+            tabBarIcon: chatIcon,
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            tabBarIcon: profileIcon,
+          }}
+        />
+      </Tabs>
+    </BottomSheetModalProvider>
   );
 }
