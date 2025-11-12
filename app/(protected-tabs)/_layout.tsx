@@ -5,7 +5,6 @@ import { HomeIcon } from "@/src/shared/components/icons/tabs-icon/home-icon";
 import { ProfileIcon } from "@/src/shared/components/icons/tabs-icon/profile-icon";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
@@ -48,7 +47,7 @@ export default function ProtectedLayout() {
 
   const tabBar = useMemo(
     () => {
-      const TabBarComponent = ({ state, descriptors, navigation }: any) => {
+      const TabBarComponent = ({ state, descriptors, navigation, style }: any) => {
         if (!isMountedRef.current) {
           return null;
         }
@@ -66,29 +65,37 @@ export default function ProtectedLayout() {
 
         return (
           <View
-            style={{ position: "relative", backgroundColor: "transparent" }}
+            style={[
+              style,
+              {
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "transparent",
+                alignItems: "center",
+                paddingBottom: insets.bottom,
+              },
+            ]}
           >
-            <LinearGradient
-              colors={["rgba(25, 167, 233, 0.12)", "rgba(25, 167, 233, 0.16)"]}
+            <BlurView
+              pointerEvents="none"
+              intensity={20}
+              tint="light"
               style={{
-                height: 90,
-                width: "100%",
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 10,
               }}
-            >
-              <BlurView
-                intensity={20}
-                tint="light"
-                style={{
-                  height: 90,
-                  width: "100%",
-                  paddingHorizontal: 16,
-                }}
-              />
-            </LinearGradient>
-            <View
+            />
+            <BlurView
+              intensity={35}
+              tint="light"
               style={{
-                backgroundColor: "white",
-                zIndex: 0,
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                zIndex: 1,
                 // iOS shadow
                 shadowColor: "#000",
                 shadowOffset: {
@@ -99,17 +106,14 @@ export default function ProtectedLayout() {
                 shadowRadius: 10,
                 // Android shadow
                 elevation: 5,
-                position: "absolute",
-                width: "90%",
-                top: -insets.bottom + 10,
-                left: screenWidth * 0.5,
-                transform: [{ translateX: -(screenWidth * 0.45) }],
+                width: Math.min(screenWidth * 0.9, 380),
                 borderRadius: 24,
                 flexDirection: "row",
                 gap: 20,
                 justifyContent: "space-evenly",
                 paddingVertical: 12,
                 paddingHorizontal: 16,
+                overflow: "hidden",
               }}
             >
               {state.routes.map((route: any, index: number) => {
@@ -153,7 +157,7 @@ export default function ProtectedLayout() {
                   </TouchableOpacity>
                 );
               })}
-            </View>
+            </BlurView>
           </View>
         );
       };

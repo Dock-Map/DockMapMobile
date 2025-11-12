@@ -2,7 +2,7 @@ import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CityCheckIcon, CloseCircleIcon, SearchInputIcon } from '@/src/shared/components/icons';
 import BottomSheetModalBase from '@/src/shared/components/ui/bottom-sheet/BottomSheetModalBase';
@@ -13,6 +13,8 @@ import PopularSection from './components/PopularSection';
 import { NearbyClub, PopularClub } from './types';
 
 const HomeScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
+  const bottomSpacing = Math.max(insets.bottom, 16);
   // selected city, city search query, bottom sheet ref
   const [selectedCity, setSelectedCity] = useState('Санкт-Петербург');
   const [citySearch, setCitySearch] = useState('');
@@ -160,8 +162,12 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomSpacing + 120 }]}
+        showsVerticalScrollIndicator={false}
+        scrollIndicatorInsets={{ bottom: bottomSpacing + 40 }}
+      >
         {/* header with greeting, search and filters */}
         <HomeHeader
           selectedCity={selectedCity}
@@ -281,9 +287,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8FAFC',
   },
-  scrollContent: {
-    paddingBottom: 40,
-  },
+  scrollContent: {},
   bodyWrapper: {
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
