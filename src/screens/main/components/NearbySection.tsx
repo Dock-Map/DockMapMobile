@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { AnchorIcon } from '@/src/shared/components/icons';
 import FavoriteToggleButton from '@/src/shared/components/FavoriteToggleButton';
@@ -21,9 +12,16 @@ interface NearbySectionProps {
   onClubPress: (clubId: string) => void;
   favoriteIds?: Set<string>;
   onFavoritePress?: (clubId: string) => void;
+  showEmptyPlaceholder?: boolean;
 }
 
-const NearbySection: React.FC<NearbySectionProps> = ({ clubs, onClubPress, favoriteIds, onFavoritePress }) => {
+const NearbySection: React.FC<NearbySectionProps> = ({
+  clubs,
+  onClubPress,
+  favoriteIds,
+  onFavoritePress,
+  showEmptyPlaceholder = true,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
@@ -40,33 +38,22 @@ const NearbySection: React.FC<NearbySectionProps> = ({ clubs, onClubPress, favor
         contentContainerStyle={styles.scrollContent}
         style={styles.scroll}
       >
-        {clubs.map((club) => {
-          const isFavorite = favoriteIds?.has(club.id);
-          return (
-            <TouchableOpacity
-              key={club.id}
-              onPress={() => onClubPress(club.id)}
-              style={styles.card}
-              activeOpacity={0.9}
-            >
-              <View style={styles.cardContent}>
-                <ImageBackground
-                  source={club.image}
-                  style={styles.cardImage}
-                  imageStyle={styles.cardImageRadius}
-                >
-                  <LinearGradient
-                    colors={club.gradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.cardGradient}
-                  >
-                    <LinearGradient
-                      colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.65)']}
-                      style={styles.cardGradientOverlay}
-                    />
-                    <BlurView intensity={25} tint="dark" style={styles.cardBlurOverlay} pointerEvents="none" />
-
+        {clubs.length === 0 && showEmptyPlaceholder ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Клубы не найдены</Text>
+          </View>
+        ) : (
+          clubs.map((club) => {
+            const isFavorite = favoriteIds?.has(club.id);
+            return (
+              <TouchableOpacity
+                key={club.id}
+                onPress={() => onClubPress(club.id)}
+                style={styles.card}
+                activeOpacity={0.9}
+              >
+                <View style={styles.cardContent}>
+                  <View style={styles.cardMedia}>
                     <View style={styles.cardTopRow}>
                       <ClubSeatsBadge occupied={club.occupiedSeats} total={club.totalSeats} />
                       <FavoriteToggleButton
@@ -83,12 +70,12 @@ const NearbySection: React.FC<NearbySectionProps> = ({ clubs, onClubPress, favor
                       </View>
                       <Text style={styles.cardPrice}>{club.priceFrom}</Text>
                     </View>
-                  </LinearGradient>
-                </ImageBackground>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        )}
       </ScrollView>
     </View>
   );
@@ -149,50 +136,20 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 20,
     overflow: 'hidden',
-    position: 'relative',
+    backgroundColor: '#FFFFFF',
   },
-  cardImage: {
-    flex: 1,
-  },
-  cardImageRadius: {
-    borderRadius: 20,
-  },
-  cardGradient: {
+  cardMedia: {
     flex: 1,
     borderRadius: 20,
-    overflow: 'hidden',
-    position: 'relative',
-    padding: 12,
+    backgroundColor: '#D8E4F7',
+    padding: 16,
     justifyContent: 'space-between',
-    gap: 12,
-    zIndex: 0,
-  },
-  cardBlurOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '36%',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    overflow: 'hidden',
-    zIndex: 1,
-  },
-  cardGradientOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 20,
-    pointerEvents: 'none',
-    zIndex: 0,
+    gap: 16,
   },
   cardTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    position: 'relative',
-    zIndex: 2,
-    elevation: 2,
   },
   favoriteButton: {
     marginLeft: 12,
@@ -200,9 +157,6 @@ const styles = StyleSheet.create({
   cardBottom: {
     gap: 8,
     alignSelf: 'stretch',
-    position: 'relative',
-    zIndex: 3,
-    elevation: 3,
   },
   cardTextBlock: {
     gap: 2,
@@ -213,21 +167,35 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 14,
     lineHeight: 20,
-    color: '#FFFFFF',
+    color: '#1A1A1A',
   },
   cardSubtitle: {
     fontFamily: 'Onest',
     fontWeight: '400',
     fontSize: 12,
     lineHeight: 16,
-    color: 'rgba(255, 255, 255, 0.64)',
+    color: '#5A6E8A',
   },
   cardPrice: {
     fontFamily: 'Onest',
     fontWeight: '600',
     fontSize: 16,
     lineHeight: 24,
-    color: '#FFFFFF',
+    color: '#00A8A0',
+  },
+  emptyContainer: {
+    width: 226,
+    height: 279,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontFamily: 'Onest',
+    fontWeight: '400',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#5A6E8A',
+    textAlign: 'center',
   },
 });
 

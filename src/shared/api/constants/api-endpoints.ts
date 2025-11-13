@@ -12,4 +12,9 @@ export const API_ENDPOINTS = {
     COMPLETE_REGISTRATION: "user/complete-registration",
     GET_CITIES: "user/cities",
   },
+  CLUBS: {
+    ROOT: "clubs",
+    BY_ID: "clubs/:id",
+    BY_USER: "clubs/user/:userId",
+  },
 };

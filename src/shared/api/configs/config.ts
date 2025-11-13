@@ -4,7 +4,8 @@ import { stringify } from "qs";
 import { getRefreshToken, getToken, removeRefreshToken, removeToken, setRefreshToken, setToken } from "../../utils/token";
 import { QS_OPTIONS } from "../constants/qs-options";
 
-export const API_URL = "https://dockmapapi-production.up.railway.app/";
+export const API_URL = 'http://localhost:3000/'
+// "https://dockmapapi-production.up.railway.app/";
 //https://dockmapapi-production.up.railway.app/
 //http://192.168.0.11:3000/
 //http://192.168.0.50:3000/api

@@ -1,7 +1,7 @@
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CityCheckIcon, CloseCircleIcon, SearchInputIcon } from '@/src/shared/components/icons';
@@ -12,6 +12,8 @@ import NearbySection from './components/NearbySection';
 import PopularSection from './components/PopularSection';
 import FiltersBottomSheet from './components/FiltersBottomSheet';
 import { NearbyClub, PopularClub } from './types';
+import { ClubsFilterParams, ClubDto } from '@/src/services/clubs.service';
+import { useGetClubs } from '@/src/shared/api/api-hooks/use-get-clubs';
 
 const HomeScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
@@ -22,6 +24,7 @@ const HomeScreen: React.FC = () => {
   const [favoriteNearby, setFavoriteNearby] = useState<Set<string>>(new Set());
   const [favoritePopular, setFavoritePopular] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+  const [clubFilters] = useState<ClubsFilterParams>({ page: 1, limit: 10 });
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const filtersSheetRef = useRef<BottomSheetModal>(null);
@@ -47,69 +50,96 @@ const HomeScreen: React.FC = () => {
     return cityOptions.filter((city) => city.toLowerCase().includes(query));
   }, [cityOptions, citySearch]);
 
-  const nearbyClubs = useMemo<NearbyClub[]>(
-    () => [
-      {
-        id: 'sevkabel-port',
-        name: 'Севкабель Порт',
-        address: 'Дворцовая наб., д. 36',
-        priceFrom: 'от 4 000 ₽',
-        occupiedSeats: 8,
-        totalSeats: 90,
-        gradient: ['#1D69F5', '#19A7E9'],
-        image: require('../../../assets/figma/nearby-1.png'),
-      },
-      {
-        id: 'zhdanovskiy',
-        name: 'Ждановский причал',
-        address: 'Ждановская наб., д. 2Б',
-        priceFrom: 'от 2 800 ₽',
-        occupiedSeats: 8,
-        totalSeats: 90,
-        gradient: ['#3559F8', '#5DC1F0'],
-        image: require('../../../assets/figma/nearby-2.png'),
-      },
-    ],
-    [],
+  const { data: clubsResponse, isLoading: isClubsLoading, isError: isClubsError, refetch: refetchClubs } = useGetClubs(clubFilters);
+
+  const formatPrice = useCallback((value?: number | null) => {
+    if (value === undefined || value === null || Number.isNaN(value)) {
+      return 'Цена по запросу';
+    }
+
+    const rounded = Math.round(value);
+    return `от ${rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ₽`;
+  }, []);
+
+  const getPriceValue = useCallback((club: ClubDto): number | null => {
+    if (club.pricePerMonth !== undefined && club.pricePerMonth !== null) {
+      return club.pricePerMonth;
+    }
+    if (club.pricePerDay !== undefined && club.pricePerDay !== null) {
+      return club.pricePerDay;
+    }
+    if (club.pricePerYear !== undefined && club.pricePerYear !== null) {
+      return club.pricePerYear;
+    }
+    return null;
+  }, []);
+
+  const normalizeAddress = useCallback((value?: string | null) => {
+    if (!value) {
+      return 'Адрес не указан';
+    }
+    return value.trim();
+  }, []);
+
+  const mapClubToNearby = useCallback(
+    (club: ClubDto): NearbyClub => {
+      const totalSpots = club.totalSpots ?? 0;
+      const availableSpots = club.availableSpots ?? 0;
+      const occupiedSeats = Math.max(totalSpots - availableSpots, 0);
+
+      return {
+        id: club.id,
+        name: club.name,
+        address: normalizeAddress(club.address),
+        priceFrom: formatPrice(getPriceValue(club)),
+        occupiedSeats,
+        totalSeats: totalSpots || occupiedSeats,
+      };
+    },
+    [formatPrice, getPriceValue, normalizeAddress],
   );
 
-  const popularClubs = useMemo<PopularClub[]>(
-    () => [
-      {
-        id: 'petrovskaya',
-        name: 'Петровская набережная',
-        address: 'Петровская наб., д. 122',
-        priceFrom: 'от 3 200 ₽',
-        occupiedSeats: 8,
-        totalSeats: 90,
-      },
-      {
-        id: 'admiralteyskiy',
-        name: 'Адмиралтейский остров',
-        address: '2-й Адмиралтейский остров',
-        priceFrom: 'от 2 800 ₽',
-        occupiedSeats: 8,
-        totalSeats: 90,
-      },
-      {
-        id: 'more-morskoy',
-        name: 'Яхт-клуб «Морской»',
-        address: 'Москва, Химки',
-        priceFrom: 'от 3 500 ₽',
-        occupiedSeats: 8,
-        totalSeats: 90,
-      },
-      {
-        id: 'sev-port',
-        name: 'Порт «Северный»',
-        address: 'Москва, Строгино',
-        priceFrom: 'от 3 000 ₽',
-        occupiedSeats: 8,
-        totalSeats: 90,
-      },
-    ],
-    [],
+  const mapClubToPopular = useCallback(
+    (club: ClubDto): PopularClub => {
+      const totalSpots = club.totalSpots ?? 0;
+      const availableSpots = club.availableSpots ?? 0;
+      const occupiedSeats = Math.max(totalSpots - availableSpots, 0);
+
+      return {
+        id: club.id,
+        name: club.name,
+        address: normalizeAddress(club.address),
+        priceFrom: formatPrice(getPriceValue(club)),
+        occupiedSeats,
+        totalSeats: totalSpots || occupiedSeats,
+      };
+    },
+    [formatPrice, getPriceValue, normalizeAddress],
   );
+
+  const clubs = clubsResponse?.data ?? [];
+
+  const nearbyClubs = useMemo<NearbyClub[]>(() => {
+    if (clubs.length === 0) {
+      return [];
+    }
+
+    return clubs.slice(0, 6).map((club) => mapClubToNearby(club));
+  }, [clubs, mapClubToNearby]);
+
+  const popularClubs = useMemo<PopularClub[]>(() => {
+    if (clubs.length === 0) {
+      return [];
+    }
+
+    const sorted = [...clubs].sort((a, b) => {
+      const firstPrice = getPriceValue(a) ?? 0;
+      const secondPrice = getPriceValue(b) ?? 0;
+      return secondPrice - firstPrice;
+    });
+
+    return sorted.slice(0, 4).map((club) => mapClubToPopular(club));
+  }, [clubs, getPriceValue, mapClubToPopular]);
 
   const handleSearch = useCallback(() => {
     router.push('/search' as any);
@@ -126,6 +156,10 @@ const HomeScreen: React.FC = () => {
   const handleFilters = useCallback(() => {
     filtersSheetRef.current?.present();
   }, []);
+
+  const handleRetryClubs = useCallback(() => {
+    refetchClubs();
+  }, [refetchClubs]);
 
   const toggleNearbyFavorite = useCallback((clubId: string) => {
     setFavoriteNearby((prev) => {
@@ -186,30 +220,53 @@ const HomeScreen: React.FC = () => {
 
         <View style={styles.bodyWrapper}>
           <View style={styles.bodyContainer}>
-            {/* nearby clubs slider */}
-            <NearbySection
-              clubs={nearbyClubs}
-              onClubPress={handleClubPress}
-              favoriteIds={favoriteNearby}
-              onFavoritePress={toggleNearbyFavorite}
-            />
-            {/* popular clubs grid */}
-            <PopularSection
-              clubs={popularClubs}
-              favoriteIds={favoritePopular}
-              onFavoritePress={(clubId) =>
-                setFavoritePopular((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(clubId)) {
-                    next.delete(clubId);
-                  } else {
-                    next.add(clubId);
+            {isClubsLoading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0097E0" />
+                <Text style={styles.loadingText}>Загружаем клубы...</Text>
+              </View>
+            )}
+
+            {isClubsError && (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorTitle}>Не удалось загрузить клубы</Text>
+                <Text style={styles.errorSubtitle}>Проверьте подключение к сети и попробуйте ещё раз.</Text>
+                <TouchableOpacity onPress={handleRetryClubs} style={styles.errorButton} activeOpacity={0.8}>
+                  <Text style={styles.errorButtonText}>Повторить</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {!isClubsError && (
+              <>
+                {/* nearby clubs slider */}
+                <NearbySection
+                  clubs={nearbyClubs}
+                  onClubPress={handleClubPress}
+                  favoriteIds={favoriteNearby}
+                  onFavoritePress={toggleNearbyFavorite}
+                  showEmptyPlaceholder={!isClubsLoading}
+                />
+                {/* popular clubs grid */}
+                <PopularSection
+                  clubs={popularClubs}
+                  favoriteIds={favoritePopular}
+                  onFavoritePress={(clubId) =>
+                    setFavoritePopular((prev) => {
+                      const next = new Set(prev);
+                      if (next.has(clubId)) {
+                        next.delete(clubId);
+                      } else {
+                        next.add(clubId);
+                      }
+                      return next;
+                    })
                   }
-                  return next;
-                })
-              }
-              onClubPress={handleClubPress}
-            />
+                  onClubPress={handleClubPress}
+                  showEmptyPlaceholder={!isClubsLoading}
+                />
+              </>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -470,6 +527,53 @@ const styles = StyleSheet.create({
   },
   citySheetContainer: {
     zIndex: 100,
+  },
+  loadingContainer: {
+    paddingVertical: 24,
+    alignItems: 'center',
+    gap: 12,
+  },
+  loadingText: {
+    fontFamily: 'Onest',
+    fontWeight: '400',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#5A6E8A',
+  },
+  errorContainer: {
+    paddingVertical: 28,
+    paddingHorizontal: 16,
+    borderRadius: 24,
+    backgroundColor: '#FFE4E6',
+    gap: 12,
+  },
+  errorTitle: {
+    fontFamily: 'Onest',
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#B91C1C',
+  },
+  errorSubtitle: {
+    fontFamily: 'Onest',
+    fontWeight: '400',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#7F1D1D',
+  },
+  errorButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    backgroundColor: '#DC2626',
+  },
+  errorButtonText: {
+    fontFamily: 'Onest',
+    fontWeight: '600',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#FFFFFF',
   },
 });
 

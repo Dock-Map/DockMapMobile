@@ -127,3 +127,64 @@ export type GetCitiesResponseDto = CityDto[];
 export type GetCitiesApiRequest = {
   url: string;
 };
+
+export type ClubOwnerDto = {
+  id: string;
+  name?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  role?: string | null;
+  telegramUsername?: string | null;
+  isPhoneVerified?: boolean;
+  isEmailVerified?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type ClubDto = {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  email?: string | null;
+  pricePerMonth?: number | null;
+  pricePerYear?: number | null;
+  pricePerDay?: number | null;
+  shipType?: string[] | null;
+  parkingLocations?: string[] | null;
+  description?: string | null;
+  imageUrl?: string | null;
+  totalSpots?: number | null;
+  availableSpots?: number | null;
+  features?: string[] | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  userId: string;
+  owner?: ClubOwnerDto | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type ClubsFilterParamsDto = {
+  searchString?: string;
+  pricePerMonthMin?: number;
+  pricePerMonthMax?: number;
+  parkingLocations?: string[];
+  shipTypes?: string[];
+  features?: string[];
+  page?: number;
+  limit?: number;
+};
+
+export type GetClubsResponseDto = {
+  data: ClubDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+export type GetClubsApiRequest = {
+  url: string;
+  urlParams?: ClubsFilterParamsDto;
+};

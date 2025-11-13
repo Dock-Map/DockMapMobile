@@ -11,49 +11,62 @@ interface PopularSectionProps {
   onClubPress: (clubId: string) => void;
   favoriteIds?: Set<string>;
   onFavoritePress?: (clubId: string) => void;
+  showEmptyPlaceholder?: boolean;
 }
 
-const PopularSection: React.FC<PopularSectionProps> = ({ clubs, onClubPress, favoriteIds, onFavoritePress }) => {
+const PopularSection: React.FC<PopularSectionProps> = ({
+  clubs,
+  onClubPress,
+  favoriteIds,
+  onFavoritePress,
+  showEmptyPlaceholder = true,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>Популярные яхт-клубы</Text>
       </View>
 
-      <View style={styles.grid}>
-        {clubs.map((club) => (
-          <TouchableOpacity
-            key={club.id}
-            onPress={() => onClubPress(club.id)}
-            style={styles.card}
-            activeOpacity={0.9}
-          >
-            <View style={styles.cardMedia}>
-              <View style={styles.cardTopRow}>
-                <FavoriteToggleButton
-                  active={favoriteIds?.has(club.id)}
-                  onPress={() => onFavoritePress?.(club.id)}
+      {clubs.length === 0 && showEmptyPlaceholder ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Клубы не найдены</Text>
+        </View>
+      ) : (
+        <View style={styles.grid}>
+          {clubs.map((club) => (
+            <TouchableOpacity
+              key={club.id}
+              onPress={() => onClubPress(club.id)}
+              style={styles.card}
+              activeOpacity={0.9}
+            >
+              <View style={styles.cardMedia}>
+                <View style={styles.cardTopRow}>
+                  <FavoriteToggleButton
+                    active={favoriteIds?.has(club.id)}
+                    onPress={() => onFavoritePress?.(club.id)}
+                  />
+                </View>
+                <ClubSeatsBadge
+                  occupied={club.occupiedSeats}
+                  total={club.totalSeats}
+                  variant="light"
+                  style={styles.cardBadge}
                 />
               </View>
-              <ClubSeatsBadge
-                occupied={club.occupiedSeats}
-                total={club.totalSeats}
-                variant="light"
-                style={styles.cardBadge}
-              />
-            </View>
-            <View style={styles.cardContent}>
-              <View style={styles.cardTextBlock}>
-                <Text style={styles.cardTitle}>{club.name}</Text>
-                <Text style={styles.cardSubtitle} numberOfLines={1} ellipsizeMode="tail">
-                  {club.address}
-                </Text>
+              <View style={styles.cardContent}>
+                <View style={styles.cardTextBlock}>
+                  <Text style={styles.cardTitle}>{club.name}</Text>
+                  <Text style={styles.cardSubtitle} numberOfLines={1} ellipsizeMode="tail">
+                    {club.address}
+                  </Text>
+                </View>
+                <Text style={styles.cardPrice}>{club.priceFrom}</Text>
               </View>
-              <Text style={styles.cardPrice}>{club.priceFrom}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
@@ -141,6 +154,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#00A8A0',
+  },
+  emptyContainer: {
+    paddingVertical: 24,
+    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontFamily: 'Onest',
+    fontWeight: '400',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#5A6E8A',
+    textAlign: 'center',
   },
 });
 

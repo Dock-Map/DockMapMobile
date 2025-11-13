@@ -1,5 +1,3 @@
-import { ImageSourcePropType } from 'react-native';
-
 export type NearbyClub = {
   id: string;
   name: string;
@@ -7,8 +5,6 @@ export type NearbyClub = {
   priceFrom: string;
   occupiedSeats: number;
   totalSeats: number;
-  gradient: [string, string];
-  image: ImageSourcePropType;
 };
 
 export type PopularClub = {
