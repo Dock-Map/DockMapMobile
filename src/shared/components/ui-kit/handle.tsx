@@ -8,7 +8,7 @@ interface HandleProps {
 
 const Handle: React.FC<HandleProps> = ({ style }) => {
   return (
-    <View style={[styles.container, HandleStyles.default, style]}>
+    <View style={[styles.container, style]}>
       <View style={styles.line} />
     </View>
   );
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   line: {
     width: 48,
     height: 4,
-    backgroundColor: '#EAF0F6',
+    backgroundColor: '#DEE4EC',
     borderRadius: 8,
   },
 });

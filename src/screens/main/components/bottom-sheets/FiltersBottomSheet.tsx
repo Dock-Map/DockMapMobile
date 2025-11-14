@@ -22,6 +22,7 @@ type VesselId = 'boat' | 'yacht' | 'jetski' | 'sail';
 
 interface FiltersBottomSheetProps {
   onClose: () => void;
+  onFiltersCountChange?: (count: number) => void;
 }
 
 interface PeriodOption {
@@ -109,7 +110,7 @@ const buildCalendarMatrix = (monthDate: Date): CalendarDayCell[][] => {
   return matrix;
 };
 
-const FiltersBottomSheet: React.FC<FiltersBottomSheetProps> = ({ onClose }) => {
+const FiltersBottomSheet: React.FC<FiltersBottomSheetProps> = ({ onClose, onFiltersCountChange }) => {
   const periodOptions = useMemo<PeriodOption[]>(() => {
     const now = new Date();
     const weekStart = startOfWeek(now);
@@ -180,6 +181,10 @@ const FiltersBottomSheet: React.FC<FiltersBottomSheetProps> = ({ onClose }) => {
 
     return enabledToggles + vesselsSelected + periodChanged + placementChanged;
   }, [togglesState, selectedVessels, selectedPeriod, selectedPlacement]);
+
+  useEffect(() => {
+    onFiltersCountChange?.(appliedFiltersCount);
+  }, [appliedFiltersCount, onFiltersCountChange]);
 
   const calendarWeeks = useMemo(() => buildCalendarMatrix(visibleMonth), [visibleMonth]);
   const calendarTitle = useMemo(() => getMonthLabel(visibleMonth), [visibleMonth]);

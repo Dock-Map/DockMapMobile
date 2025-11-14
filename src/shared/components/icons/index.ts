@@ -51,6 +51,8 @@ export { SearchInputIcon } from './SearchInputIcon';
 export { CityCheckIcon } from './CityCheckIcon';
 export { default as ShipGradientIcon } from './ShipGradientIcon';
 export { ShipIcon } from './ShipIcon';
+export { SortingIcon } from './SortingIcon';
+export { GroupIcon } from './GroupIcon';
 export { TagDefaultIcon } from './TagDefaultIcon';
 export { TagPressIcon } from './TagPressIcon';
 export { TelegramIcon } from './TelegramIcon';
