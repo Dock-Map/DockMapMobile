@@ -1,7 +1,7 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { NearbyClub } from '../../types';
+import { NearbyClub } from '../../../../types';
 import ClubSeatsBadge from '@/src/shared/components/ClubSeatsBadge';
 import FavoriteToggleButton from '@/src/shared/components/FavoriteToggleButton';
 import { GroupIcon } from '@/src/shared/components/icons';
@@ -46,7 +46,12 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               activeOpacity={0.9}
             >
               <View style={styles.cardContent}>
-                <View style={styles.cardMedia}>
+                <ImageBackground
+                  source={require('@/assets/club-mock/club.jpeg')}
+                  style={styles.cardMedia}
+                  imageStyle={styles.cardImageStyle}
+                  resizeMode="cover"
+                >
                   <View style={styles.cardTopRow}>
                     <ClubSeatsBadge occupied={item.occupiedSeats} total={item.totalSeats} />
                     <FavoriteToggleButton
@@ -55,7 +60,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                       style={styles.favoriteButton}
                     />
                   </View>
-                </View>
+                </ImageBackground>
                 <View style={styles.cardBottom}>
                   <View style={styles.cardTextBlock}>
                     <Text style={styles.cardTitle}>{item.name}</Text>
@@ -104,6 +109,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFF3F8',
     padding: 12,
     justifyContent: 'space-between',
+    overflow: 'hidden',
+  },
+  cardImageStyle: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   cardTopRow: {
     flexDirection: 'row',

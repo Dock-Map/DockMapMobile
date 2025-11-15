@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import type { LayoutChangeEvent } from 'react-native';
 
@@ -423,7 +423,7 @@ const FiltersBottomSheet: React.FC<FiltersBottomSheetProps> = ({ onClose, onFilt
         </TouchableOpacity>
       </View>
 
-      <ScrollView
+      <BottomSheetScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -622,7 +622,7 @@ const FiltersBottomSheet: React.FC<FiltersBottomSheetProps> = ({ onClose, onFilt
             })}
           </View>
         </View>
-      </ScrollView>
+      </BottomSheetScrollView>
 
       <View style={styles.footer}>
         <TouchableOpacity activeOpacity={0.8} style={styles.secondaryButton}>

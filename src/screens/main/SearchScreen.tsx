@@ -7,10 +7,11 @@ import { SearchInputIcon } from '@/src/shared/components/icons';
 import { addToSearchHistory, getSearchHistory, removeFromSearchHistory } from '@/src/shared/utils/search-history';
 import { useGetClubs } from '@/src/shared/api/api-hooks/use-get-clubs';
 import { ClubsFilterParams, ClubDto } from '@/src/services/clubs.service';
-import SearchHistory from './components/search/SearchHistory';
-import SearchResults from './components/search/SearchResults';
-import EmptySearchState from './components/search/EmptySearchState';
+
 import { NearbyClub } from './types';
+import SearchResults from './home/ui/components/search/SearchResults';
+import EmptySearchState from './home/ui/components/search/EmptySearchState';
+import SearchHistory from './home/ui/components/search/SearchHistory';
 
 const SearchScreen: React.FC = () => {
   const insets = useSafeAreaInsets();

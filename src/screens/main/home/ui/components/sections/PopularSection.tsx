@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ClubSeatsBadge from '@/src/shared/components/ClubSeatsBadge';
 import FavoriteToggleButton from '@/src/shared/components/FavoriteToggleButton';
+import { PopularClub } from '../../../../types';
 
-import { PopularClub } from '../types';
 
 interface PopularSectionProps {
   clubs: PopularClub[];
@@ -40,7 +40,12 @@ const PopularSection: React.FC<PopularSectionProps> = ({
               style={styles.card}
               activeOpacity={0.9}
             >
-              <View style={styles.cardMedia}>
+              <ImageBackground
+                source={require('@/assets/club-mock/club.jpeg')}
+                style={styles.cardMedia}
+                imageStyle={styles.cardImageStyle}
+                resizeMode="cover"
+              >
                 <View style={styles.cardTopRow}>
                   <FavoriteToggleButton
                     active={favoriteIds?.has(club.id)}
@@ -53,7 +58,7 @@ const PopularSection: React.FC<PopularSectionProps> = ({
                   variant="light"
                   style={styles.cardBadge}
                 />
-              </View>
+              </ImageBackground>
               <View style={styles.cardContent}>
                 <View style={styles.cardTextBlock}>
                   <Text style={styles.cardTitle}>{club.name}</Text>
@@ -115,6 +120,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     justifyContent: 'space-between',
+    overflow: 'hidden',
+  },
+  cardImageStyle: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
   cardTopRow: {
     flexDirection: 'row',

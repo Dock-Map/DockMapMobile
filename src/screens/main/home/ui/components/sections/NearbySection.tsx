@@ -1,11 +1,11 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { AnchorIcon } from '@/src/shared/components/icons';
 import FavoriteToggleButton from '@/src/shared/components/FavoriteToggleButton';
 import ClubSeatsBadge from '@/src/shared/components/ClubSeatsBadge';
 
-import { NearbyClub } from '../types';
+import { NearbyClub } from '../../../../types';
 
 interface NearbySectionProps {
   clubs: NearbyClub[];
@@ -53,7 +53,12 @@ const NearbySection: React.FC<NearbySectionProps> = ({
                 activeOpacity={0.9}
               >
                 <View style={styles.cardContent}>
-                  <View style={styles.cardMedia}>
+                  <ImageBackground
+                    source={require('@/assets/club-mock/club.jpeg')}
+                    style={styles.cardMedia}
+                    imageStyle={styles.cardImageStyle}
+                    resizeMode="cover"
+                  >
                     <View style={styles.cardTopRow}>
                       <ClubSeatsBadge occupied={club.occupiedSeats} total={club.totalSeats} />
                       <FavoriteToggleButton
@@ -62,14 +67,13 @@ const NearbySection: React.FC<NearbySectionProps> = ({
                         style={styles.favoriteButton}
                       />
                     </View>
-
-                    <View style={styles.cardBottom}>
-                      <View style={styles.cardTextBlock}>
-                        <Text style={styles.cardTitle}>{club.name}</Text>
-                        <Text style={styles.cardSubtitle}>{club.address}</Text>
-                      </View>
-                      <Text style={styles.cardPrice}>{club.priceFrom}</Text>
+                  </ImageBackground>
+                  <View style={styles.cardBottom}>
+                    <View style={styles.cardTextBlock}>
+                      <Text style={styles.cardTitle}>{club.name}</Text>
+                      <Text style={styles.cardSubtitle}>{club.address}</Text>
                     </View>
+                    <Text style={styles.cardPrice}>{club.priceFrom}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -139,12 +143,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   cardMedia: {
-    flex: 1,
-    borderRadius: 20,
+    height: 180,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     backgroundColor: '#D8E4F7',
     padding: 16,
-    justifyContent: 'space-between',
-    gap: 16,
+    justifyContent: 'flex-start',
+    overflow: 'hidden',
+  },
+  cardImageStyle: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   cardTopRow: {
     flexDirection: 'row',
@@ -155,8 +164,9 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   cardBottom: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     gap: 8,
-    alignSelf: 'stretch',
   },
   cardTextBlock: {
     gap: 2,
