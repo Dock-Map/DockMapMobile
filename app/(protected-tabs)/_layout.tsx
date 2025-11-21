@@ -171,7 +171,7 @@ export default function ProtectedLayout() {
         tabBar={tabBar}
       >
         <Tabs.Screen
-          name="index"
+          name="main"
           options={{
             title: "Home",
             tabBarIcon: homeIcon,

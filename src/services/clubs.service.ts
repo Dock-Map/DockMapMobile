@@ -6,6 +6,14 @@ import {
   GetClubsApiRequest,
   GetClubsResponseDto,
 } from "@/src/shared/api/types/data-contracts";
+import { ApiRequest } from "@/src/shared/api/types/native-types-api";
+
+export type GetClubByIdApiRequest = ApiRequest<
+  "CLUBS.BY_ID",
+  { id: string },
+  never,
+  ClubDto
+>;
 
 export type ClubsFilterParams = ClubsFilterParamsDto;
 
@@ -52,6 +60,15 @@ export const clubsService = {
     });
 
     return normalizeResponse(response?.data as GetClubsResponseDto | undefined, params);
+  },
+
+  async getClubById(id: string): Promise<ClubDto> {
+    const response = await api.get<GetClubByIdApiRequest>({
+      url: API_ENDPOINTS.CLUBS.BY_ID,
+      urlVariables: { id },
+    });
+
+    return response?.data as ClubDto;
   },
 };
 

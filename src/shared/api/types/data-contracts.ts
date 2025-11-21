@@ -1,3 +1,5 @@
+import { ApiRequest } from "./native-types-api";
+
 export enum UserRole {
   OWNER = 'owner', // Судовладелец
   CLUB_ADMIN = 'club_admin', // Администратор яхт-клуба
@@ -141,6 +143,25 @@ export type ClubOwnerDto = {
   updatedAt?: string;
 };
 
+export type TariffDto = {
+  id: string;
+  unit: string;
+  pricePerUnit: number;
+  clubId: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type ServiceDto = {
+  id: string;
+  name: string;
+  pricePerUnit: number;
+  unit: string;
+  clubId: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type ClubDto = {
   id: string;
   name: string;
@@ -161,6 +182,8 @@ export type ClubDto = {
   longitude?: number | null;
   userId: string;
   owner?: ClubOwnerDto | null;
+  tariffs?: TariffDto[] | null;
+  services?: ServiceDto[] | null;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -184,7 +207,9 @@ export type GetClubsResponseDto = {
   totalPages: number;
 };
 
-export type GetClubsApiRequest = {
-  url: string;
-  urlParams?: ClubsFilterParamsDto;
-};
+export type GetClubsApiRequest = ApiRequest<
+  "CLUBS.ROOT",
+  never,
+  never,
+  GetClubsResponseDto
+>;

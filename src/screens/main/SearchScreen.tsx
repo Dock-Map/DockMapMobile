@@ -142,7 +142,10 @@ const SearchScreen: React.FC = () => {
   }, []);
 
   const handleClubPress = (clubId: string) => {
-    console.log('Клуб:', clubId);
+    router.push({
+      pathname: '/(protected-tabs)/main/details' as any,
+      params: { clubId },
+    });
   };
 
   return (

@@ -23,21 +23,17 @@ const HomeScreen: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [scrollY] = useState(new Animated.Value(0));
 
-  // Состояние
   const [selectedCity, setSelectedCity] = useState('Санкт-Петербург');
   const [sortOption, setSortOption] = useState<SortOption>('recommended');
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
-  // Refs для bottom sheets
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const filtersSheetRef = useRef<BottomSheetModal>(null);
   const sortingSheetRef = useRef<BottomSheetModal>(null);
 
-  // Хуки для управления поиском и избранным
   const search = useSearch({ scrollViewRef });
   const favorites = useFavorites();
 
-  // Дебаунс для поиска с редиректом
   const debouncedSearchQuery = useDebounce(search.searchQuery, 1000);
 
   useEffect(() => {
@@ -49,7 +45,6 @@ const HomeScreen: React.FC = () => {
     }
   }, [debouncedSearchQuery]);
 
-  // Фильтры для API (только для основного контента, без поиска)
   const clubFilters = useMemo<ClubsFilterParams>(() => {
     return { page: 1, limit: 10 };
   }, []);
@@ -73,7 +68,10 @@ const HomeScreen: React.FC = () => {
 
   // Обработчики
   const handleClubPress = useCallback((clubId: string) => {
-    console.log('Клуб:', clubId);
+    router.push({
+      pathname: '/(protected-tabs)/main/details' as any,
+      params: { clubId },
+    });
   }, []);
 
   const handleFilters = useCallback(() => {
@@ -96,7 +94,6 @@ const HomeScreen: React.FC = () => {
     setSelectedCity(city);
   }, []);
 
-  // Обертка для handleHistoryItemPress с редиректом
   const handleHistoryItemPressWithRedirect = useCallback(async (query: string) => {
     await search.handleHistoryItemPress(query);
     router.push({
@@ -105,7 +102,6 @@ const HomeScreen: React.FC = () => {
     });
   }, [search]);
 
-  // Обертка для handleSearchSubmit с редиректом
   const handleSearchSubmitWithRedirect = useCallback(async () => {
     const trimmedQuery = search.searchQuery.trim();
     if (!trimmedQuery) {

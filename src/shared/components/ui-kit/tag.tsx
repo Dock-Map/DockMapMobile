@@ -11,7 +11,7 @@ import {
 
 interface TagProps {
   children: React.ReactNode;
-  state?: TagState;
+  state?: "default" | "active" | "disabled";
   onPress?: () => void;
   disabled?: boolean;
   style?: ViewStyle;
@@ -20,20 +20,15 @@ interface TagProps {
 
 const Tag: React.FC<TagProps> = ({
   children,
-  state = 'default',
+  state = "default",
   onPress,
   disabled = false,
   style,
   textStyle,
 }) => {
-  // Определяем состояние Tag
-  const tagState: TagState = disabled ? 'default' : state;
-  
-  // Получаем стили для выбранного состояния
-  const containerStyleFromState = TagContainerStyles[tagState];
-  const textStyleFromState = TagTextStyles[tagState];
+  const containerStyleFromState = {};
+  const textStyleFromState = {};
 
-  // Если есть onPress, рендерим TouchableOpacity, иначе View
   if (onPress) {
     return (
       <TouchableOpacity
