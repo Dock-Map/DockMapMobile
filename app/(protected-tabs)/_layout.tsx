@@ -1,4 +1,3 @@
-import { AppointmentsIcon } from "@/src/shared/components/icons/tabs-icon/apoitments-icon";
 import { ChatIcon } from "@/src/shared/components/icons/tabs-icon/chat-icon";
 import { FavoriteIcon } from "@/src/shared/components/icons/tabs-icon/favorite-icon";
 import { HomeIcon } from "@/src/shared/components/icons/tabs-icon/home-icon";
@@ -26,10 +25,6 @@ export default function ProtectedLayout() {
   // Мемоизируем функции иконок
   const homeIcon = useCallback(
     ({ color, size }: any) => <HomeIcon color={color} />,
-    []
-  );
-  const appointmentsIcon = useCallback(
-    ({ color, size }: any) => <AppointmentsIcon color={color} />,
     []
   );
   const favoriteIcon = useCallback(
@@ -180,13 +175,6 @@ export default function ProtectedLayout() {
           options={{
             title: "Home",
             tabBarIcon: homeIcon,
-          }}
-        />
-        <Tabs.Screen
-          name="search"
-          options={{
-            title: "Search",
-            tabBarIcon: appointmentsIcon,
           }}
         />
         <Tabs.Screen

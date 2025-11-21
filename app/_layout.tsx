@@ -78,7 +78,7 @@ const RootStack = () => {
       if (!user?.cityId) {
         router.replace("/(auth)/registration-city");
       } else {
-        router.replace("/(protected-tabs)");
+        router.replace("/(protected-tabs)/main");
       }
     } else if (isFirstEnter && !isCheckingAuth) {
       router.replace("/(auth)/onboarding");

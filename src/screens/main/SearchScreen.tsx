@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 import { SearchInputIcon } from '@/src/shared/components/icons';
 import { addToSearchHistory, getSearchHistory, removeFromSearchHistory } from '@/src/shared/utils/search-history';
 import { useGetClubs } from '@/src/shared/api/api-hooks/use-get-clubs';
+import { useDebounce } from '@/src/shared/hooks/useDebounce';
 import { ClubsFilterParams, ClubDto } from '@/src/services/clubs.service';
 
 import { NearbyClub } from './types';
@@ -17,18 +18,22 @@ const SearchScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const bottomSpacing = Math.max(insets.bottom, 16);
   const inputRef = useRef<TextInput>(null);
+  const params = useLocalSearchParams<{ query?: string }>();
   
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(params.query || '');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [favoriteSearch, setFavoriteSearch] = useState<Set<string>>(new Set());
 
+  // Дебаунс поискового запроса
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
   const clubFilters = useMemo<ClubsFilterParams>(() => {
     const filters: ClubsFilterParams = { page: 1, limit: 10 };
-    if (searchQuery.trim()) {
-      filters.searchString = searchQuery.trim();
+    if (debouncedSearchQuery.trim()) {
+      filters.searchString = debouncedSearchQuery.trim();
     }
     return filters;
-  }, [searchQuery]);
+  }, [debouncedSearchQuery]);
 
   const { data: clubsResponse, isLoading: isClubsLoading } = useGetClubs(clubFilters);
 
@@ -39,6 +44,13 @@ const SearchScreen: React.FC = () => {
       inputRef.current?.focus();
     }, 100);
   }, []);
+
+  // Обновляем поисковый запрос при изменении параметров
+  useEffect(() => {
+    if (params.query) {
+      setSearchQuery(params.query);
+    }
+  }, [params.query]);
 
   const formatPrice = useCallback((value?: number | null) => {
     if (value === undefined || value === null || Number.isNaN(value)) {
@@ -88,7 +100,7 @@ const SearchScreen: React.FC = () => {
 
   const clubs = clubsResponse?.data ?? [];
   const totalClubs = clubsResponse?.total ?? 0;
-  const hasSearchQuery = searchQuery.trim().length > 0;
+  const hasSearchQuery = debouncedSearchQuery.trim().length > 0;
 
   const searchResults = useMemo<NearbyClub[]>(() => {
     if (!hasSearchQuery) {

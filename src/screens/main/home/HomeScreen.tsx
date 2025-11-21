@@ -1,15 +1,16 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Animated, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
 import { ClubsFilterParams } from '@/src/services/clubs.service';
 import { useGetClubs } from '@/src/shared/api/api-hooks/use-get-clubs';
+import { useDebounce } from '@/src/shared/hooks/useDebounce';
 import { SortOption } from './ui/bottom-sheets/SortingBottomSheet';
 import { HomeBottomSheet } from './ui/home-bottom-sheet';
 import { HeaderRenderer } from './ui/components/headers/HeaderRenderer';
 import { StickyHeaderWrapper } from './ui/components/headers/StickyHeaderWrapper';
-import { SearchContent } from './ui/components/content/SearchContent';
 import { MainContent } from './ui/components/content/MainContent';
 import { useSearch } from './hooks/useSearch';
 import { useFavorites } from './hooks/useFavorites';
@@ -36,14 +37,22 @@ const HomeScreen: React.FC = () => {
   const search = useSearch({ scrollViewRef });
   const favorites = useFavorites();
 
-  // Фильтры для API
-  const clubFilters = useMemo<ClubsFilterParams>(() => {
-    const filters: ClubsFilterParams = { page: 1, limit: 10 };
-    if (search.searchQuery.trim()) {
-      filters.searchString = search.searchQuery.trim();
+  // Дебаунс для поиска с редиректом
+  const debouncedSearchQuery = useDebounce(search.searchQuery, 1000);
+
+  useEffect(() => {
+    if (debouncedSearchQuery.trim()) {
+      router.push({
+        pathname: '/(protected-tabs)/main/search' as any,
+        params: { query: debouncedSearchQuery.trim() },
+      });
     }
-    return filters;
-  }, [search.searchQuery]);
+  }, [debouncedSearchQuery]);
+
+  // Фильтры для API (только для основного контента, без поиска)
+  const clubFilters = useMemo<ClubsFilterParams>(() => {
+    return { page: 1, limit: 10 };
+  }, []);
 
   // Загрузка данных клубов
   const {
@@ -54,12 +63,11 @@ const HomeScreen: React.FC = () => {
   } = useGetClubs(clubFilters);
 
   const clubs = clubsResponse?.data ?? [];
-  const totalClubs = clubsResponse?.total ?? 0;
 
-  // Обработка данных клубов
-  const { searchResults, nearbyClubs, popularClubs } = useClubsData({
+  // Обработка данных клубов (только для основного контента)
+  const { nearbyClubs, popularClubs } = useClubsData({
     clubs,
-    hasSearchQuery: search.hasSearchQuery,
+    hasSearchQuery: false,
     sortOption,
   });
 
@@ -70,10 +78,6 @@ const HomeScreen: React.FC = () => {
 
   const handleFilters = useCallback(() => {
     filtersSheetRef.current?.present();
-  }, []);
-
-  const handleSortPress = useCallback(() => {
-    sortingSheetRef.current?.present();
   }, []);
 
   const handleSortSelect = useCallback((sort: SortOption) => {
@@ -91,6 +95,28 @@ const HomeScreen: React.FC = () => {
   const handleCitySelect = useCallback((city: string) => {
     setSelectedCity(city);
   }, []);
+
+  // Обертка для handleHistoryItemPress с редиректом
+  const handleHistoryItemPressWithRedirect = useCallback(async (query: string) => {
+    await search.handleHistoryItemPress(query);
+    router.push({
+      pathname: '/(protected-tabs)/main/search' as any,
+      params: { query: query.trim() },
+    });
+  }, [search]);
+
+  // Обертка для handleSearchSubmit с редиректом
+  const handleSearchSubmitWithRedirect = useCallback(async () => {
+    const trimmedQuery = search.searchQuery.trim();
+    if (!trimmedQuery) {
+      return;
+    }
+    await search.handleSearchSubmit();
+    router.push({
+      pathname: '/(protected-tabs)/main/search' as any,
+      params: { query: trimmedQuery },
+    });
+  }, [search]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -118,43 +144,27 @@ const HomeScreen: React.FC = () => {
           activeFiltersCount={activeFiltersCount}
           searchHistory={search.searchHistory}
           onSearchChange={search.handleSearchChange}
-          onSearchSubmit={search.handleSearchSubmit}
+          onSearchSubmit={handleSearchSubmitWithRedirect}
           onSearchModeCancel={search.handleSearchModeCancel}
           onBackFromResults={search.handleBackFromResults}
           onFilters={handleFilters}
           onCityPress={openCitySheet}
-          onHistoryItemPress={search.handleHistoryItemPress}
+          onHistoryItemPress={handleHistoryItemPressWithRedirect}
           onHistoryItemRemove={search.handleHistoryItemRemove}
         />
 
-        {search.hasSearchQuery ? (
-          <View style={styles.searchResultsWrapper}>
-            <SearchContent
-              isLoading={isClubsLoading}
-              isError={isClubsError}
-              searchResults={searchResults}
-              totalClubs={totalClubs}
-              favoriteIds={favorites.favoriteSearch}
-              onClubPress={handleClubPress}
-              onFavoritePress={favorites.toggleSearchFavorite}
-              onSortPress={handleSortPress}
-              onRetry={handleRetryClubs}
-            />
-          </View>
-        ) : (
-          <MainContent
-            isLoading={isClubsLoading}
-            isError={isClubsError}
-            nearbyClubs={nearbyClubs}
-            popularClubs={popularClubs}
-            favoriteNearbyIds={favorites.favoriteNearby}
-            favoritePopularIds={favorites.favoritePopular}
-            onClubPress={handleClubPress}
-            onNearbyFavoritePress={favorites.toggleNearbyFavorite}
-            onPopularFavoritePress={favorites.togglePopularFavorite}
-            onRetry={handleRetryClubs}
-          />
-        )}
+        <MainContent
+          isLoading={isClubsLoading}
+          isError={isClubsError}
+          nearbyClubs={nearbyClubs}
+          popularClubs={popularClubs}
+          favoriteNearbyIds={favorites.favoriteNearby}
+          favoritePopularIds={favorites.favoritePopular}
+          onClubPress={handleClubPress}
+          onNearbyFavoritePress={favorites.toggleNearbyFavorite}
+          onPopularFavoritePress={favorites.togglePopularFavorite}
+          onRetry={handleRetryClubs}
+        />
       </Animated.ScrollView>
 
       <HomeBottomSheet
@@ -177,11 +187,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
   },
   scrollContent: {},
-  searchResultsWrapper: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
 });
 
 export default HomeScreen;

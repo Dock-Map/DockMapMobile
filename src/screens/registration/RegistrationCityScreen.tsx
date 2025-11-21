@@ -96,7 +96,7 @@ const RegistrationCityScreen: React.FC = () => {
         cityId: selectedCityId,
         role: registrationData?.role as "owner",
       }).then(() => {
-        router.replace('/(protected-tabs)' as any);
+        router.replace('/(protected-tabs)/main' as any);
       });
     }
   };
