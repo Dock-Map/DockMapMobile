@@ -4,6 +4,7 @@ import {
   ImageBackground,
   Linking,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -304,15 +305,17 @@ const ClubDetailsScreen: React.FC = () => {
   if (!club) {
     return (
       <SafeAreaView style={styles.container} edges={["top"]}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={handleBack}
-            style={styles.backButton}
-            activeOpacity={0.7}
-          >
-            <ArrowBackIcon width={24} height={24} color={colors.grey900} />
-          </TouchableOpacity>
-        </View>
+        <SafeAreaView style={styles.headerContainer} edges={["top"]}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={handleBack}
+              style={styles.backButton}
+              activeOpacity={0.7}
+            >
+              <ArrowBackIcon width={24} height={24} color={colors.grey900} />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
         <View
           style={{
             flex: 1,
@@ -337,15 +340,17 @@ const ClubDetailsScreen: React.FC = () => {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.container} edges={["top"]}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={handleBack}
-            style={styles.backButton}
-            activeOpacity={0.7}
-          >
-            <ArrowBackIcon width={24} height={24} color={colors.grey900} />
-          </TouchableOpacity>
-        </View>
+        <SafeAreaView style={styles.headerContainer} edges={["top"]}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={handleBack}
+              style={styles.backButton}
+              activeOpacity={0.7}
+            >
+              <ArrowBackIcon width={24} height={24} color={colors.grey900} />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
         <View
           style={{
             flex: 1,
@@ -362,15 +367,17 @@ const ClubDetailsScreen: React.FC = () => {
   if (isError || !club) {
     return (
       <SafeAreaView style={styles.container} edges={["top"]}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={handleBack}
-            style={styles.backButton}
-            activeOpacity={0.7}
-          >
-            <ArrowBackIcon width={24} height={24} color={colors.grey900} />
-          </TouchableOpacity>
-        </View>
+        <SafeAreaView style={styles.headerContainer} edges={["top"]}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={handleBack}
+              style={styles.backButton}
+              activeOpacity={0.7}
+            >
+              <ArrowBackIcon width={24} height={24} color={colors.grey900} />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
         <View
           style={{
             flex: 1,
@@ -401,22 +408,23 @@ const ClubDetailsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={handleBack}
-          style={styles.backButton}
-          activeOpacity={0.7}
-        >
-          <ArrowBackIcon width={24} height={24} color={colors.grey900} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Детали</Text>
-        <FavoriteToggleButton
-          active={isFavorite}
-          onPress={handleToggleFavorite}
-          style={styles.favoriteButton}
-        />
-      </View>
+      <SafeAreaView style={styles.headerContainer} edges={["top"]}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={handleBack}
+            style={styles.backButton}
+            activeOpacity={0.7}
+          >
+            <ArrowBackIcon width={24} height={24} color={colors.grey900} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Детали</Text>
+          <FavoriteToggleButton
+            active={isFavorite}
+            onPress={handleToggleFavorite}
+            style={styles.favoriteButton}
+          />
+        </View>
+      </SafeAreaView>
 
       <ScrollView
         style={styles.scrollView}
@@ -465,6 +473,9 @@ const ClubDetailsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F8FAFC",
+  },
+  headerContainer: {
     backgroundColor: "white",
   },
   header: {
@@ -474,7 +485,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 5,
-    backgroundColor: "white",
   },
   backButton: {
     width: 40,
