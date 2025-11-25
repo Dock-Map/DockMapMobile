@@ -14,7 +14,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Toaster } from "sonner-native";
 import { ThemeProvider } from "../src/shared/use-theme";
+import YaMap from "react-native-yamap";
 
+
+YaMap.init('89bf64c3-270a-4dbe-ad31-b97fe38924c4')
 // Подавляем известную ошибку React Native Fabric при hot reload
 // Это не критичная ошибка и не влияет на работу приложения
 // ВАЖНО: Эта ошибка приходит из нативного Android кода, поэтому её нельзя

@@ -1,3 +1,4 @@
+import { MapPointIcon } from "@/src/shared/components/icons";
 import { ChatIcon } from "@/src/shared/components/icons/tabs-icon/chat-icon";
 import { FavoriteIcon } from "@/src/shared/components/icons/tabs-icon/favorite-icon";
 import { HomeIcon } from "@/src/shared/components/icons/tabs-icon/home-icon";
@@ -39,7 +40,10 @@ export default function ProtectedLayout() {
     ({ color, size }: any) => <ProfileIcon color={color} />,
     []
   );
-
+  const mapIcon = useCallback(
+    ({ color, size }: any) => <MapPointIcon color={color} />,
+    []
+  );
   const tabBar = useMemo(
     () => {
       const TabBarComponent = ({ state, descriptors, navigation, style }: any) => {
@@ -196,6 +200,13 @@ export default function ProtectedLayout() {
           options={{
             title: "Profile",
             tabBarIcon: profileIcon,
+          }}
+        />
+        <Tabs.Screen
+          name="map"
+          options={{
+            title: "Map",
+            tabBarIcon: mapIcon,
           }}
         />
       </Tabs>

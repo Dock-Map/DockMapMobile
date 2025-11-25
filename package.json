@@ -65,6 +65,7 @@
     "react-native-svg": "15.11.2",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
+    "react-native-yamap": "^4.8.3",
     "sonner-native": "^0.21.1",
     "yup": "^1.7.0",
     "zustand": "^5.0.8"
