@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { ClubsMap, Club } from "@/src/modules/map/clubs-map";
+import { ClubsMap } from "@/src/modules/map/clubs-map";
 import { ClubBottomSheet } from "./ClubBottomSheet";
 import { CreateClubBottomSheet } from "./CreateClubBottomSheet";
+import { ClubDto } from "@/src/services/clubs.service";
 
 const ClubsMapScreen: React.FC = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const [selectedClub, setSelectedClub] = React.useState<Club | null>(null);
+  const [selectedClub, setSelectedClub] = React.useState<ClubDto | null>(null);
   const [selectedPoint, setSelectedPoint] =
     React.useState<GeoJSON.Feature | null>(null);
   const createClubBottomSheetRef = useRef<BottomSheetModal>(null);
@@ -21,7 +22,7 @@ const ClubsMapScreen: React.FC = () => {
   }, [selectedPoint]);
 
 
-  const handleClubPress = useCallback((club: Club) => {
+  const handleClubPress = useCallback((club: ClubDto) => {
     setSelectedClub(club);
     bottomSheetRef.current?.present();
   }, []);

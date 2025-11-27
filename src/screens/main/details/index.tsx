@@ -75,13 +75,13 @@ const AccordionDescription = ({ description }: { description: string }) => {
 };
 
 const ClubMap = ({
-  latitude,
-  longitude,
+  // latitude,
+  // longitude,
   availableSpots,
   totalSpots,
 }: {
-  latitude: number;
-  longitude: number;
+  // latitude: number;
+  // longitude: number;
   availableSpots?: number | null;
   totalSpots?: number | null;
 }) => {
@@ -93,7 +93,7 @@ const ClubMap = ({
     <View style={styles.mapContainer}>
       <View style={styles.mapHeader}>
         <Text style={styles.mapTitle}>Карта швартовок</Text>
-        {totalSpots && (
+        {!!totalSpots && (
           <ClubSeatsBadge occupied={occupied} total={total} variant="light" />
         )}
       </View>
@@ -451,8 +451,8 @@ const ClubDetailsScreen: React.FC = () => {
           <View style={styles.bottomContentWrapper}>
             {club.latitude && club.longitude && (
               <ClubMap
-                latitude={club.latitude}
-                longitude={club.longitude}
+                // latitude={club.latitude}
+                // longitude={club.longitude}
                 availableSpots={club.availableSpots}
                 totalSpots={club.totalSpots}
               />
