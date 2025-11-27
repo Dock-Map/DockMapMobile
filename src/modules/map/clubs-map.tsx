@@ -2,6 +2,7 @@ import Mapbox, { Camera, MapView } from '@rnmapbox/maps';
 import React, { useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { RenderPoints } from './ui/render-points/render-points';
+import { PointToClubCreation } from './ui/set-point';
 
 // Токен Mapbox
 const accessToken =
@@ -19,6 +20,8 @@ export interface Club {
 
 interface ClubsMapProps {
   onClubPress: (club: Club) => void;
+  selectedPoint: GeoJSON.Feature | null;
+  setSelectedPoint: (point: GeoJSON.Feature | null) => void;
 }
 
 // Моковые данные клубов по Москве
@@ -65,7 +68,7 @@ const mockClubs: Club[] = [
   },
 ];
 
-export const ClubsMap: React.FC<ClubsMapProps> = ({ onClubPress }) => {
+export const ClubsMap: React.FC<ClubsMapProps> = ({ onClubPress, selectedPoint, setSelectedPoint }) => {
   const cameraRef = useRef<any>(null);
 
   return (
@@ -74,7 +77,10 @@ export const ClubsMap: React.FC<ClubsMapProps> = ({ onClubPress }) => {
       compassEnabled={false}
       logoEnabled={false}
       scaleBarEnabled={false}
-      styleURL="mapbox://styles/mapbox/light-v11"
+      onPress={(feature: GeoJSON.Feature) => {
+        setSelectedPoint(feature);
+      }}
+      styleURL="mapbox://styles/mapbox/outdoors-v12"
     >
       <Camera
         ref={cameraRef}
@@ -85,6 +91,8 @@ export const ClubsMap: React.FC<ClubsMapProps> = ({ onClubPress }) => {
       />
 
       <RenderPoints clubs={mockClubs} onClubPress={onClubPress} />
+
+      {selectedPoint && <PointToClubCreation point={selectedPoint} />}
     </MapView>
   );
 };
