@@ -16,5 +16,6 @@ export const API_ENDPOINTS = {
     ROOT: "clubs",
     BY_ID: "clubs/:id",
     BY_USER: "clubs/user/:userId",
+    CREATE: "clubs",
   },
 };

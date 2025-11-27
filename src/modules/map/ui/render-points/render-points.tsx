@@ -8,12 +8,11 @@ import {
 import { featureCollection, point } from "@turf/helpers";
 import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
-
-import { Club } from "../../clubs-map";
+import { ClubDto } from "@/src/shared/api/types/data-contracts";
 
 interface IRenderPoints {
-  clubs: Club[];
-  onClubPress?: (club: Club) => void;
+  clubs: ClubDto[];
+  onClubPress?: (club: ClubDto) => void;
 }
 
 export const RenderPoints: React.FC<IRenderPoints> = ({
@@ -22,17 +21,27 @@ export const RenderPoints: React.FC<IRenderPoints> = ({
 }) => {
   const clubPoints = useMemo(
     () =>
-      clubs.map((club) =>
-        point([club.lon, club.lat], {
-          club,
-          priceText: club.priceFrom
-            ? `от ${Math.round(club.priceFrom)} ₽`
-            : "Цена по запросу",
-        }),
-      ),
-    [clubs],
+      clubs
+        .map((club) => {
+          if (!club.longitude || !club.latitude) {
+            return null;
+          }
+          return point([parseFloat(club.longitude), parseFloat(club.latitude)], {
+            club,
+            priceText: club.pricePerMonth
+              ? `от ${Math.round(club.pricePerMonth)} ₽`
+              : "Цена по запросу",
+          });
+        })
+        .filter((point) => point !== null),
+    [clubs]
   );
+
   const generalClubsFeatures = featureCollection(clubPoints);
+
+  if (clubPoints.length === 0) {
+    return null;
+  }
 
   const handleOpen = (clubId: string) => {
     if (onClubPress) {
@@ -41,7 +50,6 @@ export const RenderPoints: React.FC<IRenderPoints> = ({
         onClubPress(club);
       }
     }
-    console.log(clubId, "clubId");
   };
 
   const onPointerPress = async (event: any) => {

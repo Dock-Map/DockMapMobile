@@ -3,15 +3,24 @@ import { api } from "@/src/shared/api/utils/axios-api-base";
 import {
   ClubDto,
   ClubsFilterParamsDto,
+  CreateClubDto,
   GetClubsApiRequest,
   GetClubsResponseDto,
 } from "@/src/shared/api/types/data-contracts";
 import { ApiRequest } from "@/src/shared/api/types/native-types-api";
+import { CreateClubFormData } from "../modules/club/create-club-form/model/zod";
 
 export type GetClubByIdApiRequest = ApiRequest<
   "CLUBS.BY_ID",
   { id: string },
   never,
+  ClubDto
+>;
+
+export type CreateClubApiRequest = ApiRequest<
+  "CLUBS.CREATE",
+  never,
+  CreateClubDto,
   ClubDto
 >;
 
@@ -69,6 +78,14 @@ export const clubsService = {
     });
 
     return response?.data as ClubDto;
+  },
+
+  async createClub(data: CreateClubDto): Promise<ClubDto> {
+    const response = await api.post<CreateClubApiRequest>({
+      url: API_ENDPOINTS.CLUBS.CREATE,
+      body: data,
+    });
+    return response?.data;
   },
 };
 

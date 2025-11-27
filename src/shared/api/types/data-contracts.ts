@@ -17,7 +17,7 @@ export enum AuthProvider {
 }
 
 export type IUserDto = {
-  id: string;
+  userId: string;
   role: UserRole;
   name: string;
   phone: string;
@@ -162,6 +162,17 @@ export type ServiceDto = {
   updatedAt?: string;
 };
 
+export type CreateTariffNestedDto = {
+  unit: string;
+  pricePerUnit: number;
+};
+
+export type CreateServiceNestedDto = {
+  name: string;
+  pricePerUnit: number;
+  unit: string;
+};
+
 export type ClubDto = {
   id: string;
   name: string;
@@ -178,8 +189,8 @@ export type ClubDto = {
   totalSpots?: number | null;
   availableSpots?: number | null;
   features?: string[] | null;
-  latitude?: number | null;
-  longitude?: number | null;
+  latitude?: string | null;
+  longitude?: string | null;
   userId: string;
   owner?: ClubOwnerDto | null;
   tariffs?: TariffDto[] | null;
@@ -213,3 +224,21 @@ export type GetClubsApiRequest = ApiRequest<
   never,
   GetClubsResponseDto
 >;
+
+
+export type CreateClubDto = {
+  userId: string;
+  name: string;
+  address: string;
+  phone: string;
+  email?: string;
+  description?: string;
+  imageUrl?: string;
+  totalSpots?: number;
+  availableSpots?: number;
+  features?: string[];
+  latitude?: number;
+  longitude?: number;
+  tariffs?: CreateTariffNestedDto[];
+  services?: CreateServiceNestedDto[];
+};

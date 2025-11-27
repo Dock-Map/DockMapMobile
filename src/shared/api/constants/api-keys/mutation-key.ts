@@ -9,4 +9,7 @@ export enum MutationKey {
   
   /** User */
   COMPLETE_REGISTRATION = "COMPLETE_REGISTRATION",
+
+  // Clubs
+  USER_CREATE_CLUB = "USER_CREATE_CLUB",
 }

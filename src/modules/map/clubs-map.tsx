@@ -1,75 +1,38 @@
 import Mapbox, { Camera, MapView } from '@rnmapbox/maps';
-import React, { useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useMemo, useRef } from 'react';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { RenderPoints } from './ui/render-points/render-points';
 import { PointToClubCreation } from './ui/set-point';
+import { useGetClubs } from '@/src/shared/api/api-hooks/use-get-clubs';
+import { ClubDto, ClubsFilterParams } from '@/src/services/clubs.service';
 
 // Токен Mapbox
 const accessToken =
   'pk.eyJ1IjoiZmlsdmVyZW0iLCJhIjoiY21pZnV0eHhyMDA2MzNkc2JidG14a2owZCJ9.S9HJfTpQplELnjXr4a7IwA';
 Mapbox.setAccessToken(accessToken);
 
-export interface Club {
-  id: string;
-  name: string;
-  address: string;
-  lon: number;
-  lat: number;
-  priceFrom?: number;
-}
 
 interface ClubsMapProps {
-  onClubPress: (club: Club) => void;
+  onClubPress: (club: ClubDto) => void;
   selectedPoint: GeoJSON.Feature | null;
   setSelectedPoint: (point: GeoJSON.Feature | null) => void;
 }
 
-// Моковые данные клубов по Москве
-const mockClubs: Club[] = [
-  {
-    id: '1',
-    name: 'Яхт-клуб "Северный"',
-    address: 'Москва, Ленинградское шоссе, 57',
-    lon: 37.4567,
-    lat: 55.8567,
-    priceFrom: 500,
-  },
-  {
-    id: '2',
-    name: 'Марина "Рублевка"',
-    address: 'Москва, Рублевское шоссе, 20',
-    lon: 37.3667,
-    lat: 55.7367,
-    priceFrom: 800,
-  },
-  {
-    id: '3',
-    name: 'Порт "Коломенское"',
-    address: 'Москва, проспект Андропова, 39',
-    lon: 37.6667,
-    lat: 55.6667,
-    priceFrom: 600,
-  },
-  {
-    id: '4',
-    name: 'Яхт-клуб "Строгино"',
-    address: 'Москва, Строгинское шоссе, 1',
-    lon: 37.4000,
-    lat: 55.8000,
-    priceFrom: 750,
-  },
-  {
-    id: '5',
-    name: 'Марина "Химки"',
-    address: 'Москва, Ленинградское шоссе, 1',
-    lon: 37.4333,
-    lat: 55.8833,
-    priceFrom: 900,
-  },
-];
-
 export const ClubsMap: React.FC<ClubsMapProps> = ({ onClubPress, selectedPoint, setSelectedPoint }) => {
   const cameraRef = useRef<any>(null);
+
+  const clubFilters = useMemo<ClubsFilterParams>(() => {
+    const filters: ClubsFilterParams = { page: 1, limit: 10 };
+    return filters;
+  }, []);
+
+  const { data: clubsResponse, isLoading: isClubsLoading } = useGetClubs(clubFilters);
+
+  if (isClubsLoading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  const clubs = clubsResponse?.data ?? [];
 
   return (
     <MapView
@@ -84,13 +47,13 @@ export const ClubsMap: React.FC<ClubsMapProps> = ({ onClubPress, selectedPoint, 
     >
       <Camera
         ref={cameraRef}
-        centerCoordinate={[37.6173, 55.7558]} // Центр Москвы
+        centerCoordinate={[30.3159, 59.9343]}
         zoomLevel={11}
         animationMode="flyTo"
         animationDuration={1000}
       />
 
-      <RenderPoints clubs={mockClubs} onClubPress={onClubPress} />
+      <RenderPoints clubs={clubs} onClubPress={onClubPress} />
 
       {selectedPoint && <PointToClubCreation point={selectedPoint} />}
     </MapView>

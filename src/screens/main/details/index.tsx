@@ -408,7 +408,6 @@ const ClubDetailsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <SafeAreaView style={styles.headerContainer} edges={["top"]}>
         <View style={styles.header}>
           <TouchableOpacity
             onPress={handleBack}
@@ -424,7 +423,6 @@ const ClubDetailsScreen: React.FC = () => {
             style={styles.favoriteButton}
           />
         </View>
-      </SafeAreaView>
 
       <ScrollView
         style={styles.scrollView}
@@ -481,10 +479,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "white",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 5,
   },
   backButton: {
     width: 40,
