@@ -23,13 +23,13 @@ export const CreateClubBottomSheet: React.FC<CreateClubBottomSheetProps> = ({
   if (!point) {
     return null;
   }
-
-  if (!user?.userId) {
+  if (!user?.id) {
     return null;
   }
+
   const handleSubmit = (data: CreateClubFormData) => {
     createClub({
-      userId: user?.userId,
+      userId: user?.id,
       ...data,
     }).then(() => {
       onClose();

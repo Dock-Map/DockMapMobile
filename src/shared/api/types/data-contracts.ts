@@ -17,7 +17,7 @@ export enum AuthProvider {
 }
 
 export type IUserDto = {
-  userId: string;
+  id: string;
   role: UserRole;
   name: string;
   phone: string;
