@@ -25,6 +25,8 @@ import { router } from 'expo-router';
 const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuthStore();
 
+  console.log(user);
+  
   const handleBack = () => {
     console.log('Назад');
   };

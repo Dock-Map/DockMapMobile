@@ -9,6 +9,7 @@ import {
 } from "@/src/shared/api/types/data-contracts";
 import { ApiRequest } from "@/src/shared/api/types/native-types-api";
 import { CreateClubFormData } from "../modules/club/create-club-form/model/zod";
+import * as ImagePickerExpo from 'expo-image-picker';
 
 export type GetClubByIdApiRequest = ApiRequest<
   "CLUBS.BY_ID",
@@ -80,7 +81,45 @@ export const clubsService = {
     return response?.data as ClubDto;
   },
 
-  async createClub(data: CreateClubDto): Promise<ClubDto> {
+  async createClub(
+    data: CreateClubDto,
+    image?: ImagePickerExpo.ImagePickerAsset | null,
+  ): Promise<ClubDto> {
+    // Если есть изображение, отправляем как multipart/form-data
+    if (image) {
+      const formData = new FormData();
+      
+      // Добавляем файл
+      formData.append('file', {
+        uri: image.uri,
+        type: image.mimeType || 'image/jpeg',
+        name: image.fileName || `club-image-${Date.now()}.jpg`,
+      } as any);
+
+      // Добавляем все остальные поля
+      Object.keys(data).forEach((key) => {
+        const value = data[key as keyof CreateClubDto];
+        if (value !== undefined && value !== null) {
+          // Массивы и объекты нужно сериализовать в JSON строки
+          if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, String(value));
+          }
+        }
+      });
+
+      const response = await api.post<CreateClubApiRequest>({
+        url: API_ENDPOINTS.CLUBS.CREATE,
+        body: formData as any, // FormData для multipart/form-data
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response?.data;
+    }
+
+    // Если изображения нет, отправляем как обычный JSON
     const response = await api.post<CreateClubApiRequest>({
       url: API_ENDPOINTS.CLUBS.CREATE,
       body: data,

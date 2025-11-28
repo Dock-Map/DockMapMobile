@@ -10,7 +10,11 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.dockmapmobile.mobile"
+      "bundleIdentifier": "com.dockmapmobile.mobile",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you upload them to the club.",
+        "NSPhotoLibraryAddUsageDescription": "The app needs access to save photos to your library."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -41,6 +45,12 @@
         "expo-location",
         {
           "locationWhenInUsePermission": "Show current location on map."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you upload them to the club."
         }
       ]
     ],

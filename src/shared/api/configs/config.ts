@@ -5,7 +5,7 @@ import { getRefreshToken, getToken, setRefreshToken, setToken } from "../../util
 import { QS_OPTIONS } from "../constants/qs-options";
 import { useAuthStore } from "@/src/modules/auth/stores/auth.store";
 
-export const API_URL = 'https://dockmapapi-production-b51f.up.railway.app/'
+export const API_URL = "http://localhost:3000/"
 // "https://dockmapapi-production.up.railway.app/";
 //https://dockmapapi-production.up.railway.app/
 //http://192.168.0.11:3000/

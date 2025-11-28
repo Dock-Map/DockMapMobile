@@ -2,9 +2,11 @@ import { useGetMe } from "@/src/modules/auth/api/use-get-me";
 import { CreateClubForm } from "@/src/modules/club/create-club-form";
 import { CreateClubFormData } from "@/src/modules/club/create-club-form/model/zod";
 import { useCreateClub } from "@/src/shared/api/api-hooks/user-create-club";
+import ImagePicker from "@/src/shared/components/molecules/image-picker";
 import BottomSheetModalBase from "@/src/shared/components/ui/bottom-sheet/BottomSheetModalBase";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import React from "react";
+import * as ImagePickerExpo from 'expo-image-picker';
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
 interface CreateClubBottomSheetProps {
@@ -20,6 +22,8 @@ export const CreateClubBottomSheet: React.FC<CreateClubBottomSheetProps> = ({
 }) => {
   const { mutateAsync: createClub } = useCreateClub();
   const { data: user } = useGetMe();
+  const [image, setImage] = useState<ImagePickerExpo.ImagePickerAsset | null>(null);
+
   if (!point) {
     return null;
   }
@@ -29,13 +33,21 @@ export const CreateClubBottomSheet: React.FC<CreateClubBottomSheetProps> = ({
 
   const handleSubmit = (data: CreateClubFormData) => {
     createClub({
-      userId: user?.id,
-      ...data,
+      data: {
+        userId: user?.id,
+        ...data,
+      },
+      image: image,
     }).then(() => {
       onClose();
+      setImage(null);
     }).catch((error) => {
       console.log(error);
     });
+  };
+
+  const handleImageSelected = (image: ImagePickerExpo.ImagePickerAsset) => {
+    setImage(image);
   };
 
   return (
@@ -47,6 +59,7 @@ export const CreateClubBottomSheet: React.FC<CreateClubBottomSheetProps> = ({
       containerStyle={styles.bottomSheetContainer}
     >
       <BottomSheetView style={styles.contentContainer}>
+        <ImagePicker image={image} onImageSelected={handleImageSelected}/>
         <CreateClubForm 
           point={point} 
           onSubmit={handleSubmit}

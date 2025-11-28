@@ -22,7 +22,7 @@ export const ClubsMap: React.FC<ClubsMapProps> = ({ onClubPress, selectedPoint, 
   const cameraRef = useRef<any>(null);
 
   const clubFilters = useMemo<ClubsFilterParams>(() => {
-    const filters: ClubsFilterParams = { page: 1, limit: 10 };
+    const filters: ClubsFilterParams = { page: 1, limit: 100 };
     return filters;
   }, []);
 
