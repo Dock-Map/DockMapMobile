@@ -1,30 +1,27 @@
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  ImageBackground,
   Linking,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
 
-import { TariffDto, ServiceDto, ClubOwnerDto } from "@/src/shared/api/types/data-contracts";
-import { useTheme } from "@/src/shared/use-theme";
-import { ArrowBackIcon, InfoCircleIcon, PhoneIcon } from "@/src/shared/components/icons";
 import { useGetClubById } from "@/src/shared/api/api-hooks/use-get-club-by-id";
-import Tag from "@/src/shared/components/ui-kit/tag";
-import Button from "@/src/shared/components/ui-kit/button";
-import FavoriteToggleButton from "@/src/shared/components/FavoriteToggleButton";
-import { Image } from "expo-image";
+import { ClubOwnerDto, ServiceDto, TariffDto } from "@/src/shared/api/types/data-contracts";
 import ClubSeatsBadge from "@/src/shared/components/ClubSeatsBadge";
+import FavoriteToggleButton from "@/src/shared/components/FavoriteToggleButton";
+import { ArrowBackIcon, PhoneIcon } from "@/src/shared/components/icons";
+import Button from "@/src/shared/components/ui-kit/button";
+import { useTheme } from "@/src/shared/use-theme";
+import { Image } from "expo-image";
 
 import ImagePlaceholder from "@/assets/club-mock/club.jpeg";
 const AccordionDescription = ({ description }: { description: string }) => {
