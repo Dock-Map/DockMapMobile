@@ -45,6 +45,7 @@ const NearbySection: React.FC<NearbySectionProps> = ({
         ) : (
           clubs.map((club) => {
             const isFavorite = favoriteIds?.has(club.id);
+            const imageSource = club.imageUrl ? { uri: club.imageUrl } : require('@/assets/club-mock/club.jpeg');
             return (
               <TouchableOpacity
                 key={club.id}
@@ -54,7 +55,7 @@ const NearbySection: React.FC<NearbySectionProps> = ({
               >
                 <View style={styles.cardContent}>
                   <ImageBackground
-                    source={require('@/assets/club-mock/club.jpeg')}
+                    source={imageSource}
                     style={styles.cardMedia}
                     imageStyle={styles.cardImageStyle}
                     resizeMode="cover"

@@ -33,7 +33,9 @@ const PopularSection: React.FC<PopularSectionProps> = ({
         </View>
       ) : (
         <View style={styles.grid}>
-          {clubs.map((club) => (
+          {clubs.map((club) => {
+            const imageSource = club.imageUrl ? { uri: club.imageUrl } : require('@/assets/club-mock/club.jpeg');
+            return (
             <TouchableOpacity
               key={club.id}
               onPress={() => onClubPress(club.id)}
@@ -41,7 +43,7 @@ const PopularSection: React.FC<PopularSectionProps> = ({
               activeOpacity={0.9}
             >
               <ImageBackground
-                source={require('@/assets/club-mock/club.jpeg')}
+                source={imageSource}
                 style={styles.cardMedia}
                 imageStyle={styles.cardImageStyle}
                 resizeMode="cover"
@@ -69,7 +71,8 @@ const PopularSection: React.FC<PopularSectionProps> = ({
                 <Text style={styles.cardPrice}>{club.priceFrom}</Text>
               </View>
             </TouchableOpacity>
-          ))}
+          );
+        })}
         </View>
       )}
     </View>

@@ -7,7 +7,7 @@ import BottomSheetModalBase from "@/src/shared/components/ui/bottom-sheet/Bottom
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import * as ImagePickerExpo from 'expo-image-picker';
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 interface CreateClubBottomSheetProps {
   onClose: () => void;
@@ -46,7 +46,7 @@ export const CreateClubBottomSheet: React.FC<CreateClubBottomSheetProps> = ({
     });
   };
 
-  const handleImageSelected = (image: ImagePickerExpo.ImagePickerAsset) => {
+  const handleImageSelected = (image: ImagePickerExpo.ImagePickerAsset | null) => {
     setImage(image);
   };
 
@@ -59,7 +59,9 @@ export const CreateClubBottomSheet: React.FC<CreateClubBottomSheetProps> = ({
       containerStyle={styles.bottomSheetContainer}
     >
       <BottomSheetView style={styles.contentContainer}>
+        <View style={styles.imagePickerContainer}>
         <ImagePicker image={image} onImageSelected={handleImageSelected}/>
+        </View>
         <CreateClubForm 
           point={point} 
           onSubmit={handleSubmit}
@@ -113,5 +115,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     height: 700,
+  },
+  imagePickerContainer: {
+    paddingHorizontal: 16,
   },
 });

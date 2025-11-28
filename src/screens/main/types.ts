@@ -5,6 +5,7 @@ export type NearbyClub = {
   priceFrom: string;
   occupiedSeats: number;
   totalSeats: number;
+  imageUrl: string;
 };
 
 export type PopularClub = {
@@ -14,4 +15,5 @@ export type PopularClub = {
   priceFrom: string;
   occupiedSeats: number;
   totalSeats: number;
+  imageUrl: string;
 };

@@ -26,6 +26,7 @@ import FavoriteToggleButton from "@/src/shared/components/FavoriteToggleButton";
 import { Image } from "expo-image";
 import ClubSeatsBadge from "@/src/shared/components/ClubSeatsBadge";
 
+import ImagePlaceholder from "@/assets/club-mock/club.jpeg";
 const AccordionDescription = ({ description }: { description: string }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showMoreButton, setShowMoreButton] = useState(false);
@@ -401,6 +402,8 @@ const ClubDetailsScreen: React.FC = () => {
 
   const descriptionText = club.description || "";
   const shouldTruncate = descriptionText.length > 150;
+
+  const imageSource = club.imageUrl ? { uri: club.imageUrl } : { uri: ImagePlaceholder };
   const displayDescription =
     isDescriptionExpanded || !shouldTruncate
       ? descriptionText
@@ -435,7 +438,7 @@ const ClubDetailsScreen: React.FC = () => {
         <View style={styles.content}>
           <View style={styles.topContentWrapper}>
             <Image
-              source={require("@/assets/club-mock/club.jpeg")}
+              source={imageSource}
               style={styles.image}
             />
 
