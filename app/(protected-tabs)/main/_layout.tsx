@@ -7,6 +7,7 @@ export default function HomeStackLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="search" />
       <Stack.Screen name="details" />
+      <Stack.Screen name="pier-map" />
     </Stack>
   );
 }

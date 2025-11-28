@@ -77,16 +77,26 @@ const ClubMap = ({
   // longitude,
   availableSpots,
   totalSpots,
+  clubId,
 }: {
   // latitude: number;
   // longitude: number;
   availableSpots?: number | null;
   totalSpots?: number | null;
+  clubId: string;
 }) => {
   const occupied =
     totalSpots && availableSpots ? totalSpots - availableSpots : 0;
   const total = totalSpots || 0;
 
+  const handleMapPress = () => {
+    router.push({
+      pathname: "/main/pier-map",
+      params: {
+        clubId: clubId,
+      },
+    });
+  };
   return (
     <View style={styles.mapContainer}>
       <View style={styles.mapHeader}>
@@ -96,7 +106,7 @@ const ClubMap = ({
         )}
       </View>
       <View style={styles.mapPlaceholder}>
-        <TouchableOpacity style={styles.expandButton} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.expandButton} activeOpacity={0.7} onPress={handleMapPress}>
           <View style={styles.expandIcon}>
             <View style={styles.expandIconContainer}>
               <View style={[styles.expandLine, styles.expandLineTop]} />
@@ -453,6 +463,7 @@ const ClubDetailsScreen: React.FC = () => {
               <ClubMap
                 // latitude={club.latitude}
                 // longitude={club.longitude}
+                clubId={club.id}
                 availableSpots={club.availableSpots}
                 totalSpots={club.totalSpots}
               />
